@@ -1,5 +1,5 @@
 function printQueue(queue){
-
+	console.log("Printint Queue \n")
 	for(var i = 0; i < queue.length; i++){
 		console.log(queue[i].url + "\n");
 	}
@@ -16,7 +16,15 @@ for (var i = 0; i < contexts.length; i++){
 	console.log("'" + context + "' item:" + id);
 }
 
-var queue = [];
+var queue;
+
+chrome.storage.sync.get('queue', function (result) {
+	if(result.length > 0){
+		queue = result;
+	}else{
+		queue = [];
+	}
+});
 
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info, tab){
@@ -32,9 +40,11 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	queue.push(queueContent);
 
-	console.log("Printint Queue \n")
 	printQueue(queue);
+	chrome.storage.sync.set({'queue': queue}, function() { console.log('Queue saved'); });
 
-	alert("Sorry, we're still working on this feature. We'll fix it soon, we promise!");
+	//alert("Sorry, we're still working on this feature. We'll fix it soon, we promise!");
 });
+
+
 
