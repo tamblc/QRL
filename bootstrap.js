@@ -27,11 +27,14 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 
-	chrome.tabs.create({ url: queueContent.url, active: false});
+	//Uncomment to create tab with queue'd URL
+	//chrome.tabs.create({ url: queueContent.url, active: false});
 
 	queue.push(queueContent);
 
 	console.log("Printint Queue \n")
 	printQueue(queue);
+
+	alert("Sorry, we're still working on this feature. We'll fix it soon, we promise!");
 });
 
