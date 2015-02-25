@@ -1,5 +1,8 @@
-function addToQueue(info, queueContent){
-	//To be written
+function printQueue(queue){
+
+	for(var i = 0; i < queue.length; i++){
+		console.log(queue[i].url + "\n");
+	}
 }
 
 
@@ -28,5 +31,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	queue.push(queueContent);
 
+	console.log("Printint Queue \n")
+	printQueue(queue);
 });
 
