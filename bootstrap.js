@@ -13,6 +13,8 @@ for (var i = 0; i < contexts.length; i++){
 	console.log("'" + context + "' item:" + id);
 }
 
+var queue = [];
+
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info, tab){
 
@@ -24,5 +26,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	chrome.tabs.create({ url: queueContent.url, active: false});
 
+	queue.push(queueContent);
 
 });
+
