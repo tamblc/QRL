@@ -11,15 +11,15 @@
     "storage"
   ], 
   "icons": {
-    //"16": "icon-16.png",
-    //"48": "icon-48.png",
-    //"128": "icon-128.png"
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
   },
   "background": {
     "scripts": ["bootstrap.js"]
   },
   "page_action": {
-    //"default_icon": "images/icon.png",
+    "default_icon": "images/icon.png",
     "default_title": "QRL"
   }
 
