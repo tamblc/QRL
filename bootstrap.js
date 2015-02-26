@@ -1,5 +1,6 @@
 function printQueue(queue){
 
+	console.log("Printint Queue \n");
 	for(var i = 0; i < queue.length; i++){
 		console.log(queue[i].url + "\n");
 	}
@@ -57,7 +58,6 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	queue.push(queueContent);
 
-	console.log("Printint Queue \n");
 	printQueue(queue);
 
 	chrome.storage.sync.get({'queue': queue}, function(){ console.log("Queue sync'd")});
