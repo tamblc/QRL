@@ -40,15 +40,12 @@ chrome.storage.sync.get('queue', function (result) {
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info, tab){
 
-	//Makes queueContent object with the clicked URL + the time it was added
+	//Makes queueContent object with the clicked URL, the time it was added, and a videoID
 	var d = new Date();
-	var queueContent = { url: info.linkUrl, timeAdded: d.getTime() };
+	var videoID = parseID(queueContent.url);
+	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: videoID };
 
 	//Get the link from the queueContent object and pass it into the parseID method.
-	//parseID returns the video id in the youtube link and stores it in 'videoID'
-	//videoID becomes a property of queueContent underneath queueContent.videoID
-	var videoID = parseID(queueContent.url);
-	queueContent.videoID = videoID;
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video domain for URL object is: " + queueContent.videoID);
