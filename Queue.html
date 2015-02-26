@@ -1,0 +1,32 @@
+    <div id="player"></div>
+
+    <script src="http://www.youtube.com/player_api"></script>
+
+    <script>
+
+        //Creates Youtube player in the 'player' div
+        var player;
+        function onYouTubePlayerAPIReady() {
+            player = new YT.Player('player', {
+              videoId: 'rOXR5drPJlg',
+              events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+              }
+            });
+        }
+
+        //Plays video automatically
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+
+        //Runs when video is over
+        function onPlayerStateChange(event) {        
+            if(event.data === 0) { 
+              console.log("Video over, new video being loaded");      
+              //load new video ID
+            }
+        }
+
+    </script>
