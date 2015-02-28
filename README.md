@@ -1,4 +1,4 @@
-QueRL
+QRL
 ==============
 [QRL.TheoBrowne.com](http://QRL.TheoBrowne.com)
 
