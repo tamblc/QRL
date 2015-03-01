@@ -17,6 +17,34 @@ function parseID(link)
 	return id;
 }
 
+function parseURL(url) {
+	//Create new doc element with dummy name 'a'
+	var parser = document.createElement('a'),
+	//Dummy object to collect info
+	searchObject = {},
+	queries, split, i;
+	//Let the browser do the work
+	parser.href = url;
+	//Convert query string to object
+	queries = parser.search.replace(/^\?/, '').split('&');
+	//RegEx magic
+	for( i = 0; i < queries.length; i++ ) {
+		split = queries[i].split('=');
+		searchObject[split[0]] = split[1];
+	}
+	return {
+		//Object accessible return values
+		"protocol": parser.protocol,
+		"host": parser.host,
+		"hostname": parser.hostname,
+		"port": parser.port,
+		"pathname": parser.pathname,
+		"search": parser.search,
+		"searchObject": searchObject,
+		"hash": parser.hash
+	};
+}
+
 
 //Adds context items
 var contexts = ["link"];
@@ -42,7 +70,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	//Makes queueContent object with the clicked URL, the time it was added, and a videoID
 	var d = new Date();
-	var videoID = parseID(queueContent.url);
+	var videoID = parseID(info.linkUrl);
 	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: videoID };
 
 	//Get the link from the queueContent object and pass it into the parseID method.
