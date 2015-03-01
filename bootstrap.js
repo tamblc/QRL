@@ -43,7 +43,7 @@ function checkDomainSupport(link){
 	var parser = parseURL(link);
 	console.log("The video domain is: " + parser.hostname);
  
-	if(parser.hostname === "youtube.com"){
+	if(parser.hostname === "www.youtube.com"){
 		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
 		return true;
 	}
