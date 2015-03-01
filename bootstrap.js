@@ -18,10 +18,7 @@ function parseID(link){
 
 function parseURL(url) {
 	//Create new doc element with dummy name 'a'
-	var parser = document.createElement('a'),
-	//Dummy object to collect info
-	searchObject = {},
-	queries, split, i;
+	var parser = document.createElement('a'), searchObject = {}, queries, split, i;
 	//Let the browser do the work
 	parser.href = url;
 	//Convert query string to object
@@ -33,25 +30,20 @@ function parseURL(url) {
 	}
 	return {
 		//Object accessible return values
-		"protocol": parser.protocol,
 		"host": parser.host,
 		"hostname": parser.hostname,
-		"port": parser.port,
 		"pathname": parser.pathname,
 		"search": parser.search,
 		"searchObject": searchObject,
-		"hash": parser.hash
 	};
 }
 //Checks the link to see if it is currently supported by QRL. Returns true if yes and false if no.
 function checkDomainSupport(link){
 	//Let the browser do some parsing
-	var parser = document.createElement('a');
-	parser.href = link;
-
+	var parser = parseURL(link);
 	console.log("The video domain is: " + parser.hostname);
  
-	if(parser.hostname === "www.youtube.com"){
+	if(parser.hostname === "youtube.com"){
 		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
 		return true;
 	}
