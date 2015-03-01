@@ -28,7 +28,8 @@ function parseURL(url) {
 		split = queries[i].split('=');
 		searchObject[split[0]] = split[1];
 	}
-	parser.hostname.replace("www.","")
+	//Fuck google
+	parser.hostname.replace("www.","");
 	return {
 		//Object accessible return values
 		"host": parser.host,
@@ -44,7 +45,7 @@ function checkDomainSupport(link){
 	var parser = parseURL(link);
 	console.log("The video domain is: " + parser.hostname);
  
-	if(parser.hostname === "www.youtube.com"){
+	if(parser.hostname === "youtube.com"){
 		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
 		return true;
 	}
