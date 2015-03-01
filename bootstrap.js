@@ -43,11 +43,11 @@ function checkDomainSupport(link){
 	var parser = parseURL(link);
 	console.log("The video domain is: " + parser.hostname);
  
-	if(parser.hostname === "youtube"){
+	if(parser.hostname === "youtube.com"){
 		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
 		return true;
 	}
-	else if(parser.hostname === "soundcloud"){
+	else if(parser.hostname === "soundcloud.com"){
 		alert("We're sorry, we can only handle content from Youtube.com right now. Soundcloud support coming soon!");
 		return false;
 	}
