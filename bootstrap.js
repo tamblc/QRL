@@ -28,7 +28,7 @@ function parseURL(url) {
 		split = queries[i].split('=');
 		searchObject[split[0]] = split[1];
 	}
-	//Fuck google
+	//Fk goog
 	parser.hostname.replace("www.","");
 	return {
 		//Object accessible return values
