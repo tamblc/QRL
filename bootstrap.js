@@ -7,8 +7,7 @@ function printQueue(queue){
 }
 
 //Helper function to parse the video id out of a youtube link
-function parseID(link)
-{
+function parseID(link){
 	//Split the youtube link on the watch text
 	var results = link.split("/watch?v=");
 	//Grab the video id and store it in 'id'
@@ -43,6 +42,26 @@ function parseURL(url) {
 		"searchObject": searchObject,
 		"hash": parser.hash
 	};
+//Checks the link to see if it is currently supported by QRL. Returns true if yes and false if no.
+function checkDomainSupport(link){
+	//Let the browser do some parsing
+	var parser = document.createElement('a');
+	parser.href = link;
+
+	console.log("The video domain is: " + parser.hostname);
+ 
+	if(parser.hostname === "www.youtube.com"){
+		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
+		return true;
+	}
+	else if(parser.hostname === "soundcloud.com"){
+		alert("We're sorry, we can only handle content from Youtube.com right now. Soundcloud support coming soon!");
+		return false;
+	}
+	else{
+		alert("We're sorry, we can only handle content from Youtube.com right now.");
+		return false;
+	}
 }
 
 
@@ -76,17 +95,22 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	//Get the link from the queueContent object and pass it into the parseID method.
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
-	console.log("Video domain for URL object is: " + queueContent.videoID);
+	console.log("Video ID for URL object is: " + queueContent.videoID);
 
 	//Uncomment to create tab with queue'd URL
 	//chrome.tabs.create({ url: queueContent.url, active: false});
 
-	queue.push(queueContent);
+	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue.
+	var result = checkDomainSupport(queueContent.url);
+	if(result){
+		queue.push(queueContent);
+		console.log("Object supported, adding to queue");
+	}
+	
 
 	printQueue(queue);
 
 	chrome.storage.sync.get({'queue': queue}, function(){ console.log("Queue sync'd")});
 
-	alert("Sorry, we're still working on this feature. We'll fix it soon, we promise!");
 });
 
