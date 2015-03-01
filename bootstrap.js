@@ -42,6 +42,7 @@ function parseURL(url) {
 		"searchObject": searchObject,
 		"hash": parser.hash
 	};
+}
 //Checks the link to see if it is currently supported by QRL. Returns true if yes and false if no.
 function checkDomainSupport(link){
 	//Let the browser do some parsing
