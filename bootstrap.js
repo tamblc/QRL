@@ -42,7 +42,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	//Makes queueContent object with the clicked URL, the time it was added, and a videoID
 	var d = new Date();
-	var videoID = parseID(queueContent.url);
+	var videoID = parseID(info.linkUrl);
 	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: videoID };
 
 	//Get the link from the queueContent object and pass it into the parseID method.
