@@ -28,7 +28,7 @@ function checkDomainSupport(link){
 		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
 		return true;
 	}
-	else if(parser.hostname === "www.soundcloud.com"){
+	else if(parser.hostname === "soundcloud.com"){
 		alert("We're sorry, we can only handle content from Youtube.com right now. Soundcloud support coming soon!");
 		return false;
 	}
