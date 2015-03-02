@@ -59,6 +59,20 @@ function checkDomainSupport(link){
 	}
 }
 
+//The following two functions help to properly sync the queue between browser sessions.
+var loadQueueValue = function (callback){
+	chrome.storage.sync.get("queueObj", callback);
+};
+
+var setQueueValue = function (obj, callback){
+	chrome.storage.sync.set({"queueObj" : obj }, callback);
+};
+
+//The queue object. It contains a queue array which holds queueContent objects and has a function called loadQueueValue which loads the stored queueObj.
+var queueObj = {queue: []};
+
+queueObj.loadQueueValue = loadQueueValue;
+
 
 //Adds context items
 var contexts = ["link"];
@@ -70,12 +84,13 @@ for (var i = 0; i < contexts.length; i++){
 	console.log("'" + context + "' item:" + id);
 }
 
-var queue;
-chrome.storage.sync.get('queue', function (result) {
-	if(result.length > 0){
-		queue = result;
-	}else{
-		queue = [];
+//Load in the stored queue value.
+queueObj.loadQueueValue(function(result){
+	if(result["queueObj"] != undefined){
+		queueObj = result["queueObj"];
+		if(queueObj.queue == undefined){
+			queueObj.queue = [];
+		}
 	}
 });
 
@@ -85,7 +100,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	//Makes queueContent object with the clicked URL, the time it was added, and a videoID
 	var d = new Date();
 	var videoID = parseID(info.linkUrl);
-	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: videoID };
+	var queueContent = { url: info.linkUrl, ticlearmeAdded: d.getTime(), videoID: videoID };
 
 	//Get the link from the queueContent object and pass it into the parseID method.
 
@@ -95,17 +110,18 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	//Uncomment to create tab with queue'd URL
 	//chrome.tabs.create({ url: queueContent.url, active: false});
 
-	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue.
+	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue and then syncs it to the browser.
 	var result = checkDomainSupport(queueContent.url);
 	if(result){
-		queue.push(queueContent);
+		queueObj.queue.push(queueContent);
 		console.log("Object supported, adding to queue");
+		setQueueValue(queueObj, function(){ console.log("Queue synced.")});
 	}
 	
 
-	printQueue(queue);
+	printQueue(queueObj.queue);
 
-	chrome.storage.sync.get({'queue': queue}, function(){ console.log("Queue sync'd")});
+	
 
 });
 
