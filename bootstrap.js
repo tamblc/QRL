@@ -29,7 +29,7 @@ function parseURL(url) {
 		searchObject[split[0]] = split[1];
 	}
 	//Fk goog
-	parser.hostname.replace("www.","");
+	parser.hostname = parser.hostname.replace("www.","");
 	return {
 		//Object accessible return values
 		"host": parser.host,
