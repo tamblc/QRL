@@ -94,6 +94,12 @@ queueObj.loadQueueValue(function(result){
 	}
 });
 
+function openQueueTab(){
+	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
+  		console.log("attempted opening tab");
+	});
+}
+
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info, tab){
 
@@ -106,6 +112,8 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);
+
+	openQueueTab();
 
 	//Uncomment to create tab with queue'd URL
 	//chrome.tabs.create({ url: queueContent.url, active: false});
@@ -124,4 +132,3 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	
 
 });
-
