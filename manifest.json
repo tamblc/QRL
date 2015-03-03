@@ -8,13 +8,15 @@
   "permissions": [
     "tabs",
     "contextMenus",
-    "storage"
+    "storage",
+    "*://*.youtube.com/*"
   ], 
   "icons": {
     "16": "images/icon-16.png",
     "48": "images/icon-48.png",
     "128": "images/icon-128.png"
   },
+  "content_security_policy": "script-src 'self' https://www.youtube.com https://s.ytimg.com; object-src 'self'",
   "background": {
     "scripts": ["bootstrap.js"]
   },
