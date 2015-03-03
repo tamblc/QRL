@@ -94,11 +94,27 @@ queueObj.loadQueueValue(function(result){
 	}
 });
 
+var queueTabId = null;
+//Keeps track of if the queue tab is open in chrome
+var queueTabOpen = 0;
+
 function openQueueTab(){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
   		console.log("attempted opening tab");
+  		queueTabId = tab.id;
+  		console.log("queueTabId is: " + queueTabId);
 	});
 }
+
+//Listens for if queue tab is closed to reset queueTabOpen and queueTabId
+chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
+	console.log("tab closed with id: " + tabId)
+	if (tabId==queueTabId) {
+		queueTabOpen = 0;
+		queueTabId = null;
+		console.log("Queue tab has been removed.")
+	}
+});
 
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info, tab){
@@ -113,7 +129,11 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);
 
-	openQueueTab();
+	//Open queue tab if it is not already open
+	if (queueTabOpen==0) {
+		openQueueTab();
+		queueTabOpen = 1;
+	}
 
 	//Uncomment to create tab with queue'd URL
 	//chrome.tabs.create({ url: queueContent.url, active: false});
