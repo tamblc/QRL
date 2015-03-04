@@ -50,7 +50,7 @@ var YT_ready = (function(){
     }
 })();
 // This function will be called when the API is fully loaded
-//function onYouTubePlayerAPIReady() {YT_ready(true);}
+function onYouTubePlayerAPIReady() {YT_ready(true);}
 
 // Load YouTube Frame API
 (function(){ //Closure, to not leak to the scope
@@ -63,7 +63,6 @@ var YT_ready = (function(){
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     queueObj = request;
-    console.log("Queue sync'd");
   });
 
 
