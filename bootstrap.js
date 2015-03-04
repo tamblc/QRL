@@ -1,6 +1,13 @@
+function doInCurrentTab(tabCallback) {
+    chrome.tabs.query(
+        { currentWindow: true, active: true },
+        function (tabArray) { tabCallback(tabArray[0]); }
+    );
+}
+
 function printQueue(queue){
 
-	console.log("Printint Queue \n");
+	console.log("Printing Queue \n");
 	for(var i = 0; i < queue.length; i++){
 		console.log(queue[i].url + "\n");
 	}
@@ -68,6 +75,16 @@ var setQueueValue = function (obj, callback){
 	chrome.storage.sync.set({"queueObj" : obj }, callback);
 };
 
+var loadQueueTabID = function (callback){
+	chrome.storage.sync.get("queueTabID", callback);
+};
+
+var setQueueTabID = function (obj, callback){
+	chrome.storage.sync.set({"queueTabID" : obj }, callback);
+};
+
+
+
 //The queue object. It contains a queue array which holds queueContent objects and has a function called loadQueueValue which loads the stored queueObj.
 var queueObj = {queue: []};
 
@@ -95,16 +112,39 @@ queueObj.loadQueueValue(function(result){
 });
 
 var queueTabId = null;
+queueTabId = loadQueueTabID;
+
 //Keeps track of if the queue tab is open in chrome
 var queueTabOpen = 0;
 
 function openQueueTab(){
-	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
+	chrome.tabs.create({'url': "http://qrl.theobrowne.com/Queue.html"}, function(tab) {
   		console.log("attempted opening tab");
   		queueTabId = tab.id;
-  		console.log("queueTabId is: " + queueTabId);
+  		setQueueTabID(queueTabId, function(){ console.log("queueTabId is: " + queueTabId)});
 	});
 }
+var tabUrl;
+
+
+chrome.tabs.onUpdated.addListener(function(id, info, tab){
+
+	if (tab.status !== "complete"){
+        console.log("Not loaded");
+        return;
+    }
+
+	if (tab.url.toLowerCase().indexOf("qrl.theobrowne.com/queue") === -1){
+        console.log("Not the queue");
+        return;
+    }
+    	
+    console.log("The queue!");
+    chrome.tabs.executeScript(null, {"file": "queuePage.js"});
+
+
+});
+
 
 //Listens for if queue tab is closed to reset queueTabOpen and queueTabId
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
@@ -112,7 +152,7 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
 	if (tabId==queueTabId) {
 		queueTabOpen = 0;
 		queueTabId = null;
-		console.log("Queue tab has been removed.")
+		setQueueTabID(queueTabId, function(){ console.log("Queue tab has been removed.")});
 	}
 });
 

@@ -9,7 +9,8 @@
     "tabs",
     "contextMenus",
     "storage",
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://qrl.theobrowne.com/*"
   ], 
   "icons": {
     "16": "images/icon-16.png",
