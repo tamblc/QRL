@@ -60,16 +60,28 @@ function onYouTubePlayerAPIReady() {YT_ready(true);}
   before.parentNode.insertBefore(s, before);
 })();
 
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    queueObj = request;
+  });
+
 
 var player;
+
+var queueObj;
+
+var setQueueValue = function (obj, callback){
+  chrome.storage.sync.set({"queueObj" : obj }, callback);
+};
+
 function onYouTubePlayerAPIReady() {
   player = new YT.Player('player', {
-  videoId: 'rOXR5drPJlg',
-  events: {
-  'onReady': onPlayerReady,
-  'onStateChange': onPlayerStateChange
-}
-    });
+    videoId: queueObj.queue[queueObj.cur_index].videoID,
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
 }
 //Plays video automatically
 function onPlayerReady(event) {
@@ -77,8 +89,18 @@ function onPlayerReady(event) {
 }
 //Runs when video is over
 function onPlayerStateChange(event) {  
-  if(event.data === 0) { 
+  console.log("playerStateChange = " + event.data);
+  if(event.data === YT.PlayerState.ENDED) { 
     console.log("Video over, new video being loaded");
     //load new video ID
+    if(queueObj.cur_index+1 == queueObj.queue.length)
+    {
+      console.log("Reached end of queue playback");
+      return;
+    }
+    queueObj.cur_index++;
+    player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+    player.loadVideoById(player.videoId, 0, "large");
+    setQueueValue(queueObj, function(){ console.log("Queue synced.")});
   }
 }
