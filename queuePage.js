@@ -50,7 +50,7 @@ var YT_ready = (function(){
     }
 })();
 // This function will be called when the API is fully loaded
-function onYouTubePlayerAPIReady() {YT_ready(true);}
+//function onYouTubePlayerAPIReady() {YT_ready(true);}
 
 // Load YouTube Frame API
 (function(){ //Closure, to not leak to the scope
@@ -75,13 +75,14 @@ var setQueueValue = function (obj, callback){
 };
 
 function onYouTubePlayerAPIReady() {
+  setTimeout(function(){
   player = new YT.Player('player', {
     videoId: queueObj.queue[queueObj.cur_index].videoID,
     events: {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange
     }
-  });
+  });}, 1000);
 }
 //Plays video automatically
 function onPlayerReady(event) {
