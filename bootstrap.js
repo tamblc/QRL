@@ -134,13 +134,13 @@ chrome.tabs.onUpdated.addListener(function(id, info, tab){
         return;
     }
 
-	if (tab.url.toLowerCase().indexOf("qrl.theobrowne.com/queue") === -1){
+	if (tab.url.toLowerCase().indexOf("qrl.theobrowne.com/queue.html") === -1){
         console.log("Not the queue");
         return;
     }
     	
     console.log("The queue!");
-    chrome.tabs.executeScript(null, {"file": "queuePage.js"});
+    //chrome.tabs.executeScript(null, {"file": "queuePage.js"});
 
 
 });

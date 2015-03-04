@@ -21,6 +21,11 @@
   "background": {
     "scripts": ["bootstrap.js"]
   },
+  "content_scripts": [ {
+    "matches": ["http://qrl.theobrowne.com/Queue.html"],
+    "run_at" : "document_idle",
+    "js": [ "queuePage.js" ]
+  }],
   "page_action": {
     "default_icon": "images/icon.png",
     "default_title": "QRL"
