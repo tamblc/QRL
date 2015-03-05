@@ -46,6 +46,8 @@ var queueTabId = null; //Keeps track of if the queue tab is open in chrome
 //---------------------------------
 // Functions
 
+
+//The function to create the queue tab
 function openQueueTab(){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
   		console.log("attempted opening tab");
@@ -55,8 +57,9 @@ function openQueueTab(){
 	});
 }
 
-function printQueue(queue){
 
+//Prints the current queue, for debugging
+function printQueue(queue){
 	console.log("Printint Queue \n");
 	for(var i = 0; i < queue.length; i++){
 		console.log(queue[i].url + "\n");
@@ -76,11 +79,10 @@ function parseID(link){
 function parseURL(url) {
 	//Create new doc element with dummy name 'a'
 	var parser = document.createElement('a'), searchObject = {}, queries, split, i;
-	//Let the browser do the work
-	parser.href = url;
 	//Convert query string to object
-	queries = parser.search.replace(/^\?/, '').split('&');
+	parser.href = url;
 	//RegEx magic
+	queries = parser.search.replace(/^\?/, '').split('&');
 	for( i = 0; i < queries.length; i++ ) {
 		split = queries[i].split('=');
 		searchObject[split[0]] = split[1];
@@ -96,6 +98,7 @@ function parseURL(url) {
 		"searchObject": searchObject,
 	};
 }
+
 //Checks the link to see if it is currently supported by QRL. Returns true if yes and false if no.
 function checkDomainSupport(link){
 	//Let the browser do some parsing
