@@ -46,7 +46,6 @@ function checkDomainSupport(link){
 	console.log("The video domain is: " + parser.hostname);
  
 	if(parser.hostname === "youtube.com"){
-		alert("We're sorry, the queue hasn't been implemented yet. This video has been saved to your queue, and you will be able to watch it soon!");
 		return true;
 	}
 	else if(parser.hostname === "soundcloud.com"){
@@ -59,6 +58,20 @@ function checkDomainSupport(link){
 	}
 }
 
+//The following two functions help to properly sync the queue between browser sessions.
+var loadQueueValue = function (callback){
+	chrome.storage.sync.get("queueObj", callback);
+};
+
+var setQueueValue = function (obj, callback){
+	chrome.storage.sync.set({"queueObj" : obj }, callback);
+};
+
+//The queue object. It contains a queue array which holds queueContent objects and has a function called loadQueueValue which loads the stored queueObj.
+var queueObj = {queue: [], cur_index: 0};
+
+queueObj.loadQueueValue = loadQueueValue;
+
 
 //Adds context items
 var contexts = ["link"];
@@ -70,12 +83,41 @@ for (var i = 0; i < contexts.length; i++){
 	console.log("'" + context + "' item:" + id);
 }
 
-var queue;
-chrome.storage.sync.get('queue', function (result) {
-	if(result.length > 0){
-		queue = result;
-	}else{
-		queue = [];
+//Load in the stored queue value.
+var loadWrapper = function (){
+	queueObj.loadQueueValue(function(result){
+	if(result["queueObj"] != undefined){
+		queueObj = result["queueObj"];
+		queueObj.loadQueueValue = loadQueueValue;
+		if(queueObj.queue == undefined){
+			queueObj.queue = [];
+			queueObj.cur_index = 0;
+		}
+	}
+});
+}
+
+loadWrapper();
+
+
+var queueTabId = null;
+//Keeps track of if the queue tab is open in chrome
+
+function openQueueTab(){
+	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
+  		console.log("attempted opening tab");
+  		queueTabId = tab.id;
+  		chrome.tabs.sendMessage(tab.id, queueObj);
+  		console.log("queueTabId is: " + queueTabId);
+	});
+}
+
+//Listens for if queue tab is closed to reset queueTabOpen and queueTabId
+chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
+	console.log("tab closed with id: " + tabId)
+	if (tabId==queueTabId) {
+		queueTabId = null;
+		console.log("Queue tab has been removed.")
 	}
 });
 
@@ -85,27 +127,41 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	//Makes queueContent object with the clicked URL, the time it was added, and a videoID
 	var d = new Date();
 	var videoID = parseID(info.linkUrl);
-	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: videoID };
+	var queueContent = { url: info.linkUrl, ticlearmeAdded: d.getTime(), videoID: videoID };
 
 	//Get the link from the queueContent object and pass it into the parseID method.
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);
 
+	
+
 	//Uncomment to create tab with queue'd URL
 	//chrome.tabs.create({ url: queueContent.url, active: false});
+	//update the queueObj just in case any changes need to be saved before any possible additions
+	loadWrapper();
 
-	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue.
+	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue and then syncs it to the browser.
 	var result = checkDomainSupport(queueContent.url);
 	if(result){
-		queue.push(queueContent);
+		//Update the current queue first so we don't lose any changes made elsewhere with this update
+		queueObj.queue.push(queueContent);
 		console.log("Object supported, adding to queue");
+		setQueueValue(queueObj, function(){ console.log("Queue synced.")});
+		if(queueTabId != null)
+		{
+			chrome.tabs.sendMessage(queueTabId, queueObj);
+		}
 	}
 	
 
-	printQueue(queue);
+	printQueue(queueObj.queue);
 
-	chrome.storage.sync.get({'queue': queue}, function(){ console.log("Queue sync'd")});
+	//Open queue tab if it is not already open
+	if (queueTabId == null && result) {
+		openQueueTab();
+	}
+
+	
 
 });
-
