@@ -115,6 +115,9 @@ function checkDomainSupport(link){
 	}
 }
 
+//---------------------------------
+// Listeners
+
 //Listens for if queue tab is closed to reset queueTabOpen and queueTabId
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
 	console.log("tab closed with id: " + tabId)
