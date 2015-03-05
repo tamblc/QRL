@@ -1,3 +1,60 @@
+//---------------------------------
+// Function variables
+
+//The following two functions help to properly sync the queue between browser sessions.
+var loadQueueValue = function (callback){
+	chrome.storage.sync.get("queueObj", callback);
+};
+
+var setQueueValue = function (obj, callback){
+	chrome.storage.sync.set({"queueObj" : obj }, callback);
+};
+
+//Load in the stored queue value.
+var loadWrapper = function (){
+	queueObj.loadQueueValue(function(result){
+	if(result["queueObj"] != undefined){
+		queueObj = result["queueObj"];
+		queueObj.loadQueueValue = loadQueueValue;
+		if(queueObj.queue == undefined){
+			queueObj.queue = [];
+			queueObj.cur_index = 0;
+		}
+	}
+});
+}
+
+//---------------------------------
+// Main
+
+//Adds context items
+var contexts = ["link"];
+for (var i = 0; i < contexts.length; i++){
+	var context = contexts[i];
+	var title = "Add to queue";
+	var id = chrome.contextMenus.create({	"title": title, 
+											"contexts":[context]});
+	console.log("'" + context + "' item:" + id);
+}
+
+//The queue object
+var queueObj = {queue: [], cur_index: 0};
+queueObj.loadQueueValue = loadQueueValue;
+loadWrapper();
+var queueTabId = null; //Keeps track of if the queue tab is open in chrome
+
+//---------------------------------
+// Functions
+
+function openQueueTab(){
+	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
+  		console.log("attempted opening tab");
+  		queueTabId = tab.id;
+  		chrome.tabs.sendMessage(tab.id, queueObj);
+  		console.log("queueTabId is: " + queueTabId);
+	});
+}
+
 function printQueue(queue){
 
 	console.log("Printint Queue \n");
@@ -56,60 +113,6 @@ function checkDomainSupport(link){
 		alert("We're sorry, we can only handle content from Youtube.com right now.");
 		return false;
 	}
-}
-
-//The following two functions help to properly sync the queue between browser sessions.
-var loadQueueValue = function (callback){
-	chrome.storage.sync.get("queueObj", callback);
-};
-
-var setQueueValue = function (obj, callback){
-	chrome.storage.sync.set({"queueObj" : obj }, callback);
-};
-
-//The queue object. It contains a queue array which holds queueContent objects and has a function called loadQueueValue which loads the stored queueObj.
-var queueObj = {queue: [], cur_index: 0};
-
-queueObj.loadQueueValue = loadQueueValue;
-
-
-//Adds context items
-var contexts = ["link"];
-for (var i = 0; i < contexts.length; i++){
-	var context = contexts[i];
-	var title = "Add to queue";
-	var id = chrome.contextMenus.create({	"title": title, 
-											"contexts":[context]});
-	console.log("'" + context + "' item:" + id);
-}
-
-//Load in the stored queue value.
-var loadWrapper = function (){
-	queueObj.loadQueueValue(function(result){
-	if(result["queueObj"] != undefined){
-		queueObj = result["queueObj"];
-		queueObj.loadQueueValue = loadQueueValue;
-		if(queueObj.queue == undefined){
-			queueObj.queue = [];
-			queueObj.cur_index = 0;
-		}
-	}
-});
-}
-
-loadWrapper();
-
-
-var queueTabId = null;
-//Keeps track of if the queue tab is open in chrome
-
-function openQueueTab(){
-	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
-  		console.log("attempted opening tab");
-  		queueTabId = tab.id;
-  		chrome.tabs.sendMessage(tab.id, queueObj);
-  		console.log("queueTabId is: " + queueTabId);
-	});
 }
 
 //Listens for if queue tab is closed to reset queueTabOpen and queueTabId
