@@ -32,7 +32,7 @@ function onYouTubePlayerAPIReady() {
       'onReady': onPlayerReady,
       'onStateChange': onPlayerStateChange
     }
-  });}, 100);
+  });}, 500);
 }
 //Plays video automatically
 function onPlayerReady(event) {
