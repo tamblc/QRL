@@ -4,7 +4,7 @@ QRL
 
 INTRODUCTION
 ------------
-The mildly practical content queueing system for your browser. A Chrome extension still very early in development
+The mildly practical content queueing system for your browser. A Chrome extension still very early in development. Now plays unprotected Youtube content!
 
 INSTALLATION
 ------------
