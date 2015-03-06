@@ -158,7 +158,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 // Main
 
 //Adds context items
-var contexts = ["link", "video"];
+var contexts = ["selection", "link", "video"];
 var acceptedURLs = ["*://*.youtube.com/*",
 					"*://youtube.com/*",
 					"*://*.soundcloud.com/*",
