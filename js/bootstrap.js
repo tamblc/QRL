@@ -24,24 +24,6 @@ var loadWrapper = function (){
 });
 }
 
-//---------------------------------
-// Main
-
-//Adds context items
-var contexts = ["link"];
-for (var i = 0; i < contexts.length; i++){
-	var context = contexts[i];
-	var title = "Add to queue";
-	var id = chrome.contextMenus.create({	"title": title, 
-											"contexts":[context]});
-	console.log("'" + context + "' item:" + id);
-}
-
-//The queue object
-var queueObj = {queue: [], cur_index: 0};
-queueObj.loadQueueValue = loadQueueValue;
-loadWrapper();
-var queueTabId = null; //Keeps track of if the queue tab is open in chrome
 
 //---------------------------------
 // Functions
@@ -170,7 +152,24 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	if (queueTabId == null && result) {
 		openQueueTab();
 	}
-
-	
-
 });
+
+//---------------------------------
+// Main
+
+//Adds context items
+var contexts = ["link", "video"];
+var acceptedURLs = ["*://*.youtube.com/*",
+					"*://youtube.com/*",
+					"*://*.soundcloud.com/*",
+					"*://soundcloud.com/*"];
+var title = "Add to queue";
+chrome.contextMenus.create({	"title": title, 
+								"contexts": contexts,
+								"documentUrlPatterns": acceptedURLs});
+
+//The queue object
+var queueObj = {queue: [], cur_index: 0};
+queueObj.loadQueueValue = loadQueueValue;
+loadWrapper();
+var queueTabId = null; //Keeps track of if the queue tab is open in chrome
