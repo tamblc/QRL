@@ -82,7 +82,8 @@ function populateQueue(){
     var Document = "";
     for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
         console.log('Adding ' + x);
-        Document = Document + queueObj.queue[x].url + "<br>";
+        Document = Document + 
+        "<img class=\"thumbnail\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
     }
 
     document.getElementById("queue").innerHTML = Document;
