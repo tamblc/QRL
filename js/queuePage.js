@@ -10,6 +10,7 @@
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         queueObj = request;
+        populateQueue();
 });
 
 //Objects for the queuePage
@@ -37,6 +38,7 @@ var loadWrapper = function (){
       console.log("Empty queue!");
     }
   }
+  populateQueue();
   makeVideo();
 });
 }
@@ -73,6 +75,17 @@ function makeVideo(){
         }
 
     });
+
+}
+
+function populateQueue(){
+    var Document = "";
+    for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
+        console.log('Adding ' + x);
+        Document = Document + queueObj.queue[x].url + "<br>";
+    }
+
+    document.getElementById("queue").innerHTML = Document;
 }
 
 //Runs when video state changes, handles videos ending
@@ -84,9 +97,11 @@ function onPlayerStateChange(event) {
         if(queueObj.cur_index+1 == queueObj.queue.length)
         {
             console.log("Reached end of queue playback");
+            queueObj.cur_index++;
             return;
         }
         queueObj.cur_index++;
+        populateQueue();
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         player.loadVideoById(player.videoId, 0, "large");
         setQueueValue(queueObj, function(){ console.log("Queue synced.")});
