@@ -1,6 +1,11 @@
-.spacer{
+.verticalSpacer{
 	width: 100%;
-	height: 2%;
+	height: 4%;
+}
+.horizontalSpacer{
+	width: 3%;
+	height: 96%;
+	float: left;
 }
 .logo{
 	font-family: 'Lucida Bright', Georgia, serif;
@@ -12,14 +17,23 @@
 	padding-bottom: 2px;
     border-bottom: 1px solid black;
 }
-.playerContainer{
+.playerFrame{
 	width: 80%;
-	height: 64%;
+	height: 80%;
+    float: left;
+}
+.playerContainer{
+	width: 97%;
+	height: 98%;
 	background-color: #d7d7d7;
 	border: 1px solid black;
 	background-image: url("/images/QueueBackground.png");
 	background-repeat: no-repeat;
     background-position: center;
+    float: right;
+}
+.player{
+	float: right;
 }
 .queueContainer{
 	font-family: 'Lucida Bright', Georgia, serif;
@@ -32,6 +46,19 @@
 	padding-top: 10px;
     padding-bottom: 10px;
     border-top: 1px solid black;
+    background-color: #ebebeb;
+
+}
+.vertiQueue{
+	font-family: 'Lucida Bright', Georgia, serif;
+	font-size: 10px;
+	text-align: center;
+	color: #eb8200;
+	float: right;
+
+	width: 18%;
+	height: 90%;
+    border-left: 1px solid black;
     background-color: #ebebeb;
 
 }
