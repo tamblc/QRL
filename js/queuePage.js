@@ -26,7 +26,7 @@ function onYouTubePlayerAPIReady() {
     setTimeout(function(){
     player = new YT.Player('player', {
         videoId: queueObj.queue[queueObj.cur_index].videoID,
-        height: '64%',
+        height: '100%',
         width: '100%',
         events: {
             'onReady': onPlayerReady,
