@@ -10,6 +10,7 @@
 	color: #eb8200;
 	background-color: #d7d7d7;
 	padding-bottom: 2px;
+    border-bottom: 1px solid black;
 }
 .playerContainer{
 	width: 80%;
@@ -25,7 +26,7 @@
 	height: 22%;
 	padding-top: 10px;
     padding-bottom: 10px;
-    border: 2px solid black;
+    border-top: 1px solid black;
     background-color: #ebebeb;
 
 }
