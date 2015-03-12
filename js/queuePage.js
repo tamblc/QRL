@@ -13,6 +13,20 @@ chrome.runtime.onMessage.addListener(
         populateQueue();
 });
 
+//listener for clear
+document.getElementById("clear").addEventListener("click", function(){
+
+    alert("Clear!");
+
+});
+
+//listener for skip
+document.getElementById("skip").addEventListener("click", function(){
+
+    alert("Skip!");
+
+});
+
 //Objects for the queuePage
 
 
