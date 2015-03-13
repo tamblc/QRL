@@ -25,7 +25,7 @@ document.getElementById("skip").addEventListener("click", function(){
 
     //alert("Skip!");
     //load new video ID
-    if (queueObj.cur_index+1 == queueObj.queue.lenght) {
+    if (queueObj.cur_index+1 == queueObj.queue.length) {
         console.log("Last item in queue");
     } else {
         queueObj.cur_index++;
