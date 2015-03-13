@@ -23,8 +23,17 @@ document.getElementById("clear").addEventListener("click", function(){
 //listener for skip
 document.getElementById("skip").addEventListener("click", function(){
 
-    alert("Skip!");
-
+    //alert("Skip!");
+    //load new video ID
+    if (queueObj.cur_index+1 == queueObj.queue.lenght) {
+        console.log("Last item in queue");
+    } else {
+        queueObj.cur_index++;
+        populateQueue();
+        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+        player.loadVideoById(player.videoId, 0, "large");
+        setQueueValue(queueObj, function(){ console.log("Queue synced.")});
+    }
 });
 
 //Objects for the queuePage
