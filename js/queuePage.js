@@ -9,8 +9,9 @@
 //Listens for the queue to be sent over
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        queueObj = request;
+        queueObj.queue.push(request);
         populateQueue();
+        setQueueValue(queueObj, function(){ console.log("Queue synced.")});
 });
 
 //listener for clear
@@ -28,8 +29,6 @@ document.getElementById("skip").addEventListener("click", function(){
 });
 
 //Objects for the queuePage
-
-
 //Loads queue value
 var loadQueueValue = function (callback){
   chrome.storage.sync.get("queueObj", callback);
@@ -57,10 +56,16 @@ var loadWrapper = function (){
 });
 }
 
+//---------------------------------
+// Main
+
 var player;
 var halt = true;
 var queueObj = {queue: [], cur_index: 0};
 queueObj.loadQueueValue = loadQueueValue;
+
+//---------------------------------
+// Functions
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {

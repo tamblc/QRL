@@ -1,41 +1,14 @@
 //---------------------------------
-// Function variables
-
-//The following two functions help to properly sync the queue between browser sessions.
-var loadQueueValue = function (callback){
-	chrome.storage.sync.get("queueObj", callback);
-};
-
-var setQueueValue = function (obj, callback){
-	chrome.storage.sync.set({"queueObj" : obj }, callback);
-};
-
-//Load in the stored queue value.
-var loadWrapper = function (){
-	queueObj.loadQueueValue(function(result){
-	if(result["queueObj"] != undefined){
-		queueObj = result["queueObj"];
-		queueObj.loadQueueValue = loadQueueValue;
-		if(queueObj.queue == undefined){
-			queueObj.queue = [];
-			queueObj.cur_index = 0;
-		}
-	}
-});
-}
-
-
-//---------------------------------
 // Functions
 
 
 //The function to create the queue tab
-function openQueueTab(){
+function openQueueTab(queueContent){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
   		console.log("attempted opening tab");
   		queueTabId = tab.id;
-  		chrome.tabs.sendMessage(tab.id, queueObj);
   		console.log("queueTabId is: " + queueTabId);
+  		chrome.tabs.sendMessage(queueTabId, queueContent);
 	});
 }
 
@@ -120,38 +93,20 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 	var videoID = parseID(info.linkUrl);
 	var queueContent = { url: info.linkUrl, ticlearmeAdded: d.getTime(), videoID: videoID };
 
-	//Get the link from the queueContent object and pass it into the parseID method.
-
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);
-
-	
-
-	//Uncomment to create tab with queue'd URL
-	//chrome.tabs.create({ url: queueContent.url, active: false});
-	//update the queueObj just in case any changes need to be saved before any possible additions
-	loadWrapper();
 
 	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue and then syncs it to the browser.
 	var result = checkDomainSupport(queueContent.url);
 	if(result){
-		//Update the current queue first so we don't lose any changes made elsewhere with this update
-		queueObj.queue.push(queueContent);
 		console.log("Object supported, adding to queue");
-		setQueueValue(queueObj, function(){ console.log("Queue synced.")});
-		if(queueTabId != null)
-		{
-			chrome.tabs.sendMessage(queueTabId, queueObj);
+		if(queueTabId == null){
+			openQueueTab(queueContent);
+		}else{
+			chrome.tabs.sendMessage(queueTabId, queueContent);
 		}
 	}
-	
 
-	printQueue(queueObj.queue);
-
-	//Open queue tab if it is not already open
-	if (queueTabId == null && result) {
-		openQueueTab();
-	}
 });
 
 //---------------------------------
@@ -167,9 +122,4 @@ var title = "Add to queue";
 chrome.contextMenus.create({	"title": title, 
 								"contexts": contexts,
 								"documentUrlPatterns": acceptedURLs});
-
-//The queue object
-var queueObj = {queue: [], cur_index: 0};
-queueObj.loadQueueValue = loadQueueValue;
-loadWrapper();
 var queueTabId = null; //Keeps track of if the queue tab is open in chrome
