@@ -17,7 +17,12 @@ chrome.runtime.onMessage.addListener(
 //listener for clear
 document.getElementById("clear").addEventListener("click", function(){
 
-    alert("Clear!");
+    chrome.storage.sync.remove("queueObj");
+    queueObj = {queue: [], cur_index: 0};
+    setQueueValue(queueObj, function() {console.log("Queue has been cleared.");})
+    chrome.tabs.getCurrent(function(tab){
+        chrome.tabs.remove(tab.id);
+    });
 
 });
 
@@ -28,6 +33,9 @@ document.getElementById("skip").addEventListener("click", function(){
     //load new video ID
     if (queueObj.cur_index+1 == queueObj.queue.length) {
         console.log("Last item in queue");
+        chrome.tabs.getCurrent(function(tab){
+        chrome.tabs.remove(tab.id);
+    });
     } else {
         queueObj.cur_index++;
         populateQueue();
@@ -105,6 +113,8 @@ function makeVideo(){
     });
 
 }
+
+
 
 function populateQueue(){
     var Document = "";
