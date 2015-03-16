@@ -1,7 +1,6 @@
 //---------------------------------
 // Functions
 
-
 //The function to create the queue tab
 function openQueueTab(queueContent){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
@@ -10,15 +9,6 @@ function openQueueTab(queueContent){
   		console.log("queueTabId is: " + queueTabId);
   		chrome.tabs.sendMessage(queueTabId, queueContent);
 	});
-}
-
-
-//Prints the current queue, for debugging
-function printQueue(queue){
-	console.log("Printint Queue \n");
-	for(var i = 0; i < queue.length; i++){
-		console.log(queue[i].url + "\n");
-	}
 }
 
 //Helper function to parse the video id out of a youtube link

@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "QRL",
+  "name": "QRL - The Dynamic URL Queue",
+  "short_name": "QRL",
   "description": "The mildly practical content queueing system for your browser.",
   "version": "0.2",
 

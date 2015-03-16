@@ -1,3 +1,6 @@
+//---------------------------------
+// Functions
+
 // Load YouTube Frame API
 (function(){ //Closure, to not leak to the scope
     var s = document.createElement("script");
@@ -6,46 +9,64 @@
     before.parentNode.insertBefore(s, before);
 })();
 
-//Listens for the queue to be sent over
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        queueObj.queue.push(request);
-        populateQueue();
-        setQueueValue(queueObj, function(){ console.log("Queue synced.")});
-});
+//Loads the Youtube player when it's ready
+function onYouTubePlayerAPIReady() {
+    queueObj.loadQueueValue = loadQueueValue;
+    loadWrapper();
+    console.log("Youtube API Done!");
+    makeVideo();
+}
 
-//listener for clear
-document.getElementById("clear").addEventListener("click", function(){
+//Plays video when the player is loaded
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
 
-    chrome.storage.sync.remove("queueObj");
-    queueObj = {queue: [], cur_index: 0};
-    setQueueValue(queueObj, function() {console.log("Queue has been cleared.");})
-    chrome.tabs.getCurrent(function(tab){
-        chrome.tabs.remove(tab.id);
-    });
-
-});
-
-//listener for skip
-document.getElementById("skip").addEventListener("click", function(){
-
-    //alert("Skip!");
-    //load new video ID
-    if (queueObj.cur_index+1 == queueObj.queue.length) {
-        console.log("Last item in queue");
-        chrome.tabs.getCurrent(function(tab){
-        chrome.tabs.remove(tab.id);
-    });
-    } else {
-        queueObj.cur_index++;
-        populateQueue();
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-        player.loadVideoById(player.videoId, 0, "large");
-        setQueueValue(queueObj, function(){ console.log("Queue synced.")});
+//Prints the current queue, for debugging
+function printQueue(queue){
+    console.log("Printing Queue \n");
+    for(var i = 0; i < queue.length; i++){
+        console.log(queue[i].url + "\n");
     }
-});
+}
 
-//Objects for the queuePage
+//Helper function to make videos. Only runs after it's been called twice
+function makeVideo(){
+    if(halt){
+      halt = false;
+      return;
+    }
+    player = new YT.Player('player', {
+        videoId: queueObj.queue[queueObj.cur_index].videoID,
+        height: '100%',
+        width: '100%',
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+
+    });
+
+}
+
+//Populates the html for the Queue on the page
+function populateQueue(){
+    printQueue(queueObj.queue);
+    var Document = "";
+    for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
+        var queueClass = "thumbnail";
+        console.log('Adding ' + x);
+        Document = Document + 
+        "<img class=\"" + queueClass +
+        "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+    }
+
+    document.getElementById("queue").innerHTML = Document;
+}
+
+//---------------------------------
+// Function Variables
+
 //Loads queue value
 var loadQueueValue = function (callback){
   chrome.storage.sync.get("queueObj", callback);
@@ -68,10 +89,62 @@ var loadWrapper = function (){
       console.log("Empty queue!");
     }
   }
-  populateQueue();
-  makeVideo();
 });
 }
+
+var pushQueueContent = function(request){
+    queueObj.queue.push(request);
+    populateQueue();
+    makeVideo();
+    setQueueValue(queueObj, function(){ console.log("Queue saved.")});
+
+}
+
+//---------------------------------
+// Listeners
+
+//Listens for the queue to be sent over
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if(!(queueObj.length > 0)){
+            console.log("Waiting for queue to load...");
+            //loadWrapper(); //This line needs to run to complete before the next line runs. A Promise should be used
+            pushQueueContent(request);
+        }else{
+            pushQueueContent(request);
+        }
+});
+
+//listener for clear
+document.getElementById("clear").addEventListener("click", function(){
+
+    chrome.storage.sync.remove("queueObj");
+    queueObj = {queue: [], cur_index: 0};
+    setQueueValue(queueObj, function() {console.log("Queue has been cleared.");})
+    chrome.tabs.getCurrent(function(tab){
+        chrome.tabs.remove(tab.id);
+    });
+
+});
+
+//listener for skip
+document.getElementById("skip").addEventListener("click", function(){
+
+    //alert("Skip!");
+    //load new video ID
+    if (queueObj.cur_index+1 == queueObj.queue.length) {
+        console.log("Last item in queue");
+        chrome.tabs.getCurrent(function(tab){
+            chrome.tabs.remove(tab.id);
+        });
+    } else {
+        queueObj.cur_index++;
+        populateQueue();
+        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+        player.loadVideoById(player.videoId, 0, "large");
+        setQueueValue(queueObj, function(){ console.log("Queue saved.")});
+    }
+});
 
 //---------------------------------
 // Main
@@ -81,53 +154,6 @@ var halt = true;
 var queueObj = {queue: [], cur_index: 0};
 queueObj.loadQueueValue = loadQueueValue;
 
-//---------------------------------
-// Functions
-
-//Loads the Youtube player when it's ready
-function onYouTubePlayerAPIReady() {
-    queueObj.loadQueueValue = loadQueueValue;
-    loadWrapper();
-    console.log("Youtube API Done!");
-    makeVideo();
-}
-//Plays video automatically
-function onPlayerReady(event) {
-    event.target.playVideo();
-}
-
-function makeVideo(){
-    if(halt){
-      halt = false;
-      return;
-    }
-    player = new YT.Player('player', {
-        videoId: queueObj.queue[queueObj.cur_index].videoID,
-        height: '100%',
-        width: '100%',
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-
-    });
-
-}
-
-
-
-function populateQueue(){
-    var Document = "";
-    for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
-        var queueClass = "thumbnail";
-        console.log('Adding ' + x);
-        Document = Document + 
-        "<img class=\"" + queueClass +
-        "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
-    }
-
-    document.getElementById("queue").innerHTML = Document;
-}
 
 //Runs when video state changes, handles videos ending
 function onPlayerStateChange(event) {  
@@ -144,6 +170,7 @@ function onPlayerStateChange(event) {
         queueObj.cur_index++;
         populateQueue();
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+        console.log(player.videoId);
         player.loadVideoById(player.videoId, 0, "large");
         setQueueValue(queueObj, function(){ console.log("Queue synced.")});
     }
