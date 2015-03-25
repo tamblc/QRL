@@ -151,6 +151,9 @@ document.getElementById("skip").addEventListener("click", function(){
         });
     } else {
         queueObj.cur_index++;
+        if(TempContentWaiting){ 
+            setQueueValue(queueObj, function(){ location.reload();});
+        }
         populateQueue();
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         player.loadVideoById(player.videoId, 0, "large");
