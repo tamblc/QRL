@@ -177,14 +177,16 @@ function onPlayerStateChange(event) {
     if(event.data === YT.PlayerState.ENDED) { 
         console.log("Video over, new video being loaded");
         //load new video ID
-        //if(queueObj.cur_index+1 == queueObj.queue.length)
-        //{
-        //    console.log("Reached end of queue playback");
-        //    queueObj.cur_index++;
-        //    return;
-        //}
+        if(queueObj.cur_index+1 == queueObj.queue.length)
+        {
+           console.log("Reached end of queue playback");
+           queueObj.cur_index++;
+           return;
+        }
         queueObj.cur_index++;
         populateQueue();
+        //prints the current videoID, undefined if player isn't accessible
+        console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         console.log(player.videoId);
         console.log("Loading video by ID");
