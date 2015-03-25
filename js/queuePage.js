@@ -36,6 +36,7 @@ function makeVideo(){
       halt = false;
       return;
     }
+    populateQueue();
     player = new YT.Player('player', {
         videoId: queueObj.queue[queueObj.cur_index].videoID,
         height: '100%',
@@ -102,7 +103,6 @@ var loadWrapper = function (){
 
 var pushQueueContent = function(request){
     queueObj.queue.push(request);
-    populateQueue();
     makeVideo();
     setQueueValue(queueObj, function(){ console.log("Queue saved.")});
 
