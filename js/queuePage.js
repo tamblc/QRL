@@ -86,6 +86,10 @@ var loadWrapper = function (){
         console.log("Pushing temp content");
         pushQueueContent(TempContent);
     }
+    if(!Playing){
+        Playing = true;
+        makeVideo();
+    }
     console.log("Queue loaded!");
     if(queueObj.queue == undefined){
       queueObj.queue = [];
@@ -158,6 +162,7 @@ document.getElementById("skip").addEventListener("click", function(){
 console.log("Temporary content holders being made");
 var TempContentWaiting = false;
 var TempContent;
+var Playing = false;
 console.log("Temporary content holders made");
 
 var player;
@@ -172,16 +177,17 @@ function onPlayerStateChange(event) {
     if(event.data === YT.PlayerState.ENDED) { 
         console.log("Video over, new video being loaded");
         //load new video ID
-        if(queueObj.cur_index+1 == queueObj.queue.length)
-        {
-            console.log("Reached end of queue playback");
-            queueObj.cur_index++;
-            return;
-        }
+        //if(queueObj.cur_index+1 == queueObj.queue.length)
+        //{
+        //    console.log("Reached end of queue playback");
+        //    queueObj.cur_index++;
+        //    return;
+        //}
         queueObj.cur_index++;
         populateQueue();
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         console.log(player.videoId);
+        console.log("Loading video by ID");
         player.loadVideoById(player.videoId, 0, "large");
         setQueueValue(queueObj, function(){ console.log("Queue synced.")});
     }
