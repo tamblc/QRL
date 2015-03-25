@@ -83,9 +83,10 @@ var loadWrapper = function (){
   if(result["queueObj"] != undefined){
     queueObj = result["queueObj"];
     queueObj.loadQueueValue = loadQueueValue;
-    if(TempContentWaiting){
+    if(TempContentWaiting && TempContent != undefined){
         console.log("Pushing temp content");
         pushQueueContent(TempContent);
+        TempContent = undefined;
     }
     if(!Playing){
         Playing = true;
@@ -183,9 +184,12 @@ function onPlayerStateChange(event) {
            queueObj.cur_index++;
            return;
         }
-        queueObj.cur_index++;
+        queueObj.cur_index++;        
+        if(TempContentWaiting){ 
+            setQueueValue(queueObj, function(){ location.reload();});
+        }
+
         populateQueue();
-        //prints the current videoID, undefined if player isn't accessible
         console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         console.log(player.videoId);
