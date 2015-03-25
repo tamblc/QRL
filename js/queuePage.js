@@ -82,6 +82,10 @@ var loadWrapper = function (){
   if(result["queueObj"] != undefined){
     queueObj = result["queueObj"];
     queueObj.loadQueueValue = loadQueueValue;
+    if(TempContentWaiting){
+        console.log("Pushing temp content");
+        pushQueueContent(TempContent);
+    }
     console.log("Queue loaded!");
     if(queueObj.queue == undefined){
       queueObj.queue = [];
@@ -106,12 +110,15 @@ var pushQueueContent = function(request){
 //Listens for the queue to be sent over
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        if(!(queueObj.length > 0)){
-            console.log("Waiting for queue to load...");
+        if(request.newTab){
+            //Temporary queue should be here
             //loadWrapper(); //This line needs to run to complete before the next line runs. A Promise should be used
-            pushQueueContent(request);
+            //pushQueueContent(request.queueContent);
+            console.log("New tab message!");
+            TempContentWaiting = true;
+            TempContent = request.queueContent;
         }else{
-            pushQueueContent(request);
+            pushQueueContent(request.queueContent);
         }
 });
 
@@ -148,6 +155,10 @@ document.getElementById("skip").addEventListener("click", function(){
 
 //---------------------------------
 // Main
+console.log("Temporary content holders being made");
+var TempContentWaiting = false;
+var TempContent;
+console.log("Temporary content holders made");
 
 var player;
 var halt = true;

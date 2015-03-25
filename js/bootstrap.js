@@ -7,7 +7,8 @@ function openQueueTab(queueContent){
   		console.log("attempted opening tab");
   		queueTabId = tab.id;
   		console.log("queueTabId is: " + queueTabId);
-  		chrome.tabs.sendMessage(queueTabId, queueContent);
+  		var request = { queueContent: queueContent, newTab: true};
+  		chrome.tabs.sendMessage(queueTabId, request);
 	});
 }
 
@@ -93,7 +94,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 		if(queueTabId == null){
 			openQueueTab(queueContent);
 		}else{
-			chrome.tabs.sendMessage(queueTabId, queueContent);
+			chrome.tabs.sendMessage(queueTabId, { queueContent: queueContent, newTab: false });
 		}
 	}
 
