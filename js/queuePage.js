@@ -130,12 +130,15 @@ chrome.runtime.onMessage.addListener(
 //listener for clear
 document.getElementById("clear").addEventListener("click", function(){
 
+    if (confirm("Are you sure you want to clear the queue? (This is permanent)")) {
+
     chrome.storage.sync.remove("queueObj");
     queueObj = {queue: [], cur_index: 0};
     setQueueValue(queueObj, function() {console.log("Queue has been cleared.");})
     chrome.tabs.getCurrent(function(tab){
         chrome.tabs.remove(tab.id);
     });
+}
 
 });
 
