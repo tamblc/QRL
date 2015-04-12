@@ -163,6 +163,50 @@ document.getElementById("skip").addEventListener("click", function(){
         setQueueValue(queueObj, function(){ console.log("Queue saved.")});
     }
 });
+//---------------------------------
+// Models
+var ContentData = Backbone.Model.extend({
+    defaults: {
+        contentID: "",
+        contentTitle: ""
+    }
+});
+
+//---------------------------------
+// Collections
+var Queue = Backbone.Collection.extend({
+    model: ContentData,
+    localStorage: new Store("whatRL"),
+});
+
+//---------------------------------
+// View
+var QueueView = Backbone.View.extend({
+     initialize: function () {
+         this.collection.fetch();
+         console.log("Initialized queue with " + this.collection.length + " items");
+     },
+     insertItem: function (ID) {
+         newContent = new ContentData({
+             contentID: ID
+         });
+         this.collection.add(newContent);
+         newContent.save();
+         console.log("Just added " + ID + " to the queue.")
+         console.log("Queue is " + this.collection.length + " items long.");
+     },
+     printQueue: function () {
+        console.log("Printing queue from view");
+        for(var i = 0; i < this.collection.length; i++)
+        {
+            console.log(this.collection.models[i].ID);
+        }
+    }
+ });
+
+ var queueView = new QueueView({
+     collection: Queue
+ });
 
 //---------------------------------
 // Main
