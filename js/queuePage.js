@@ -11,8 +11,6 @@
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
-    queueObj.loadQueueValue = loadQueueValue;
-    loadWrapper();
     console.log("Youtube API Done!");
     makeVideo();
 }
@@ -66,64 +64,19 @@ function populateQueue(){
 }
 
 //---------------------------------
-// Function Variables
-
-//Loads queue value
-var loadQueueValue = function (callback){
-  chrome.storage.sync.get("queueObj", callback);
-};
-
-//Syncs updated queue
-var setQueueValue = function (obj, callback){
-    chrome.storage.sync.set({"queueObj" : obj }, callback);
-};
-
-var loadWrapper = function (){
-  queueObj.loadQueueValue(function(result){
-  if(result["queueObj"] != undefined){
-    queueObj = result["queueObj"];
-    queueObj.loadQueueValue = loadQueueValue;
-    if(TempContentWaiting && TempContent != undefined){
-        console.log("Pushing temp content");
-        pushQueueContent(TempContent);
-        TempContent = undefined;
-    }
-    if(!Playing){
-        Playing = true;
-        makeVideo();
-    }
-    console.log("Queue loaded!");
-    if(queueObj.queue == undefined){
-      queueObj.queue = [];
-      queueObj.cur_index = 0;
-      console.log("Empty queue!");
-    }
-  }
-});
-}
-
-var pushQueueContent = function(request){
-    queueObj.queue.push(request);
-    makeVideo();
-    setQueueValue(queueObj, function(){ console.log("Queue saved.")});
-
-}
-
-//---------------------------------
 // Listeners
 
 //Listens for the queue to be sent over
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
+        if(queueObj.queue === undefined){
+            queueObj.write('queue', []);
+            queueObj.write('cur_index', 0);
+        }
+        queueObj.queue.push(request.queueContent)
+        populateQueue();
         if(request.newTab){
-            //Temporary queue should be here
-            //loadWrapper(); //This line needs to run to complete before the next line runs. A Promise should be used
-            //pushQueueContent(request.queueContent);
-            console.log("New tab message!");
-            TempContentWaiting = true;
-            TempContent = request.queueContent;
-        }else{
-            pushQueueContent(request.queueContent);
+            makeVideo();
         }
 });
 
@@ -132,9 +85,9 @@ document.getElementById("clear").addEventListener("click", function(){
 
     if (confirm("Are you sure you want to clear the queue? (This is permanent)")) {
 
-    chrome.storage.sync.remove("queueObj");
-    queueObj = {queue: [], cur_index: 0};
-    setQueueValue(queueObj, function() {console.log("Queue has been cleared.");})
+    queueObj.write('queue', []);
+    queueObj.write('cur_index', 0);
+    console.log("Queue has been cleared.");
     chrome.tabs.getCurrent(function(tab){
         chrome.tabs.remove(tab.id);
     });
@@ -144,69 +97,21 @@ document.getElementById("clear").addEventListener("click", function(){
 
 //listener for skip
 document.getElementById("skip").addEventListener("click", function(){
-
     //alert("Skip!");
     //load new video ID
     if (queueObj.cur_index+1 == queueObj.queue.length) {
+        queueObj.cur_index++;
         console.log("Last item in queue");
         chrome.tabs.getCurrent(function(tab){
             chrome.tabs.remove(tab.id);
         });
     } else {
         queueObj.cur_index++;
-        if(TempContentWaiting){ 
-            setQueueValue(queueObj, function(){ location.reload();});
-        }
         populateQueue();
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         player.loadVideoById(player.videoId, 0, "large");
-        setQueueValue(queueObj, function(){ console.log("Queue saved.")});
     }
 });
-//---------------------------------
-// Models
-var ContentData = Backbone.Model.extend({
-    defaults: {
-        contentID: "",
-        contentTitle: ""
-    }
-});
-
-//---------------------------------
-// Collections
-var Queue = Backbone.Collection.extend({
-    model: ContentData,
-    localStorage: new Store("whatRL"),
-});
-
-//---------------------------------
-// View
-var QueueView = Backbone.View.extend({
-     initialize: function () {
-         this.collection.fetch();
-         console.log("Initialized queue with " + this.collection.length + " items");
-     },
-     insertItem: function (ID) {
-         newContent = new ContentData({
-             contentID: ID
-         });
-         this.collection.add(newContent);
-         newContent.save();
-         console.log("Just added " + ID + " to the queue.")
-         console.log("Queue is " + this.collection.length + " items long.");
-     },
-     printQueue: function () {
-        console.log("Printing queue from view");
-        for(var i = 0; i < this.collection.length; i++)
-        {
-            console.log(this.collection.models[i].ID);
-        }
-    }
- });
-
- var queueView = new QueueView({
-     collection: Queue
- });
 
 //---------------------------------
 // Main
@@ -218,9 +123,10 @@ console.log("Temporary content holders made");
 
 var player;
 var halt = true;
-var queueObj = {queue: [], cur_index: 0};
-queueObj.loadQueueValue = loadQueueValue;
-
+var queueObj = Rhaboo.persistent('queueObj');
+if(queueObj.cur_index === undefined){
+    queueObj.write('cur_index', 0);
+}
 
 //Runs when video state changes, handles videos ending
 function onPlayerStateChange(event) {  
@@ -235,9 +141,6 @@ function onPlayerStateChange(event) {
            return;
         }
         queueObj.cur_index++;        
-        if(TempContentWaiting){ 
-            setQueueValue(queueObj, function(){ location.reload();});
-        }
 
         populateQueue();
         console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
@@ -245,6 +148,5 @@ function onPlayerStateChange(event) {
         console.log(player.videoId);
         console.log("Loading video by ID");
         player.loadVideoById(player.videoId, 0, "large");
-        setQueueValue(queueObj, function(){ console.log("Queue synced.")});
     }
 }
