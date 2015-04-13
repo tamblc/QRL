@@ -100,13 +100,13 @@ document.getElementById("skip").addEventListener("click", function(){
     //alert("Skip!");
     //load new video ID
     if (queueObj.cur_index+1 == queueObj.queue.length) {
-        queueObj.cur_index++;
+        queueObj.write('cur_index', ++queueObj.cur_index);
         console.log("Last item in queue");
         chrome.tabs.getCurrent(function(tab){
             chrome.tabs.remove(tab.id);
         });
     } else {
-        queueObj.cur_index++;
+        queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
         player.videoId = queueObj.queue[queueObj.cur_index].videoID;
         player.loadVideoById(player.videoId, 0, "large");
@@ -115,12 +115,6 @@ document.getElementById("skip").addEventListener("click", function(){
 
 //---------------------------------
 // Main
-console.log("Temporary content holders being made");
-var TempContentWaiting = false;
-var TempContent;
-var Playing = false;
-console.log("Temporary content holders made");
-
 var player;
 var halt = true;
 var queueObj = Rhaboo.persistent('queueObj');
@@ -137,10 +131,10 @@ function onPlayerStateChange(event) {
         if(queueObj.cur_index+1 == queueObj.queue.length)
         {
            console.log("Reached end of queue playback");
-           queueObj.cur_index++;
+           queueObj.write('cur_index', ++queueObj.cur_index);
            return;
         }
-        queueObj.cur_index++;        
+        queueObj.write('cur_index', ++queueObj.cur_index);     
 
         populateQueue();
         console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
