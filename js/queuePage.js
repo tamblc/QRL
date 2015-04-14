@@ -31,9 +31,11 @@ function printQueue(queue){
 //Helper function to make videos. Only runs after it's been called twice
 function makeVideo(){
     if(halt){
+      console.log("in makeVideo: (1) halted");
       halt = false;
       return;
     }
+    console.log("in makeVideo: (2) running");
     populateQueue();
     player = new YT.Player('player', {
         videoId: queueObj.queue[queueObj.cur_index].videoID,
@@ -50,7 +52,8 @@ function makeVideo(){
 
 //Populates the html for the Queue on the page
 function populateQueue(){
-    printQueue(queueObj.queue);
+    console.log("in populateQueue");
+    //printQueue(queueObj.queue);
     var Document = "";
     for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
         var queueClass = "thumbnail";
@@ -70,12 +73,15 @@ function populateQueue(){
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if(queueObj.queue === undefined){
+            console.log("heard message: defining queue");
             queueObj.write('queue', []);
             queueObj.write('cur_index', 0);
         }
+        console.log("heard message: pushing content");
         queueObj.queue.push(request.queueContent)
         populateQueue();
         if(request.newTab){
+            console.log("heard message: newTab, call makeVideo");
             makeVideo();
         }
 });
