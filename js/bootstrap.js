@@ -67,7 +67,7 @@ function checkDomainSupport(link){
 // Listeners
 
 //Listens for if queue tab is closed to reset queueTabOpen and queueTabId
-chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
+chrome.tabs.onRemoved.addListener(function(tabId){
 	console.log("tab closed with id: " + tabId)
 	if (tabId==queueTabId) {
 		queueTabId = null;
@@ -76,7 +76,7 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
 });
 
 //Listens for contextMenu button clicks
-chrome.contextMenus.onClicked.addListener(function(info, tab){
+chrome.contextMenus.onClicked.addListener(function(info){
 
 	//Makes queueContent object with the clicked URL, the time it was added, and an id
 	var d = new Date();
@@ -99,6 +99,12 @@ chrome.contextMenus.onClicked.addListener(function(info, tab){
 
 });
 
+
+chrome.browserAction.onClicked.addListener(function(){
+	if (queueTabId==null)
+		openQueueTab(null);
+});
+
 //---------------------------------
 // Main
 
@@ -111,8 +117,9 @@ var acceptedURLs = ["*://*.youtube.com/*",
 					"*://*.vimeo.com/*",
 					"*://vimeo.com/*"];
 var validContext = "Add to queue";
-var noConext = "Open queue page";
-chrome.contextMenus.create({	"title": title, 
+
+chrome.contextMenus.create({	"title": validContext, 
 								"contexts": contexts,
 								"documentUrlPatterns": acceptedURLs});
+
 var queueTabId = null; //Keeps track of if the queue tab is open in chrome
