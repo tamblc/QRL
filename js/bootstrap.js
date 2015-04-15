@@ -12,16 +12,6 @@ function openQueueTab(queueContent){
 	});
 }
 
-// //Helper function to parse the video id out of a youtube link
-// function parseID(link){
-// 	//Split the youtube link on the watch text
-// 	var results = link.split("/watch?v=");
-// 	//Grab the video id and store it in 'id'
-// 	var id = results[1];
-// 	//Returns the video id
-// 	return id;
-// }
-
 function parseURL(url) {
 	var success = false;
 	var media   = {};
@@ -117,8 +107,11 @@ var contexts = ["selection", "link", "video"];
 var acceptedURLs = ["*://*.youtube.com/*",
 					"*://youtube.com/*",
 					"*://*.soundcloud.com/*",
-					"*://soundcloud.com/*"];
-var title = "Add to queue";
+					"*://soundcloud.com/*",
+					"*://*.vimeo.com/*",
+					"*://vimeo.com/*"];
+var validContext = "Add to queue";
+var noConext = "Open queue page";
 chrome.contextMenus.create({	"title": title, 
 								"contexts": contexts,
 								"documentUrlPatterns": acceptedURLs});
