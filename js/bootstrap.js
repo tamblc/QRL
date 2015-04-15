@@ -12,54 +12,63 @@ function openQueueTab(queueContent){
 	});
 }
 
-//Helper function to parse the video id out of a youtube link
-function parseID(link){
-	//Split the youtube link on the watch text
-	var results = link.split("/watch?v=");
-	//Grab the video id and store it in 'id'
-	var id = results[1];
-	//Returns the video id
-	return id;
-}
+// //Helper function to parse the video id out of a youtube link
+// function parseID(link){
+// 	//Split the youtube link on the watch text
+// 	var results = link.split("/watch?v=");
+// 	//Grab the video id and store it in 'id'
+// 	var id = results[1];
+// 	//Returns the video id
+// 	return id;
+// }
 
 function parseURL(url) {
-	//Create new doc element with dummy name 'a'
-	var parser = document.createElement('a'), searchObject = {}, queries, split, i;
-	//Convert query string to object
-	parser.href = url;
-	//RegEx magic
-	queries = parser.search.replace(/^\?/, '').split('&');
-	for( i = 0; i < queries.length; i++ ) {
-		split = queries[i].split('=');
-		searchObject[split[0]] = split[1];
+	var success = false;
+	var media   = {};
+	if (url.match('http(s)://(www.)?youtube|youtu\.be')) {
+	    if (url.match('embed')) { youtube_id = url.split(/embed\//)[1].split('"')[0]; }
+	    else { youtube_id = url.split(/v\/|v=|youtu\.be\//)[1].split(/[?&]/)[0]; }
+	    media.type  = "youtube";
+	    media.id    = youtube_id;
+	    success = true;
 	}
-	//Fk goog
-	parser.hostname = parser.hostname.replace("www.","");
-	return {
-		//Object accessible return values
-		"host": parser.host,
-		"hostname": parser.hostname,
-		"pathname": parser.pathname,
-		"search": parser.search,
-		"searchObject": searchObject,
-	};
+	else if (url.match('http(s)://(player.)?vimeo\.com')) {
+	    vimeo_id = url.split(/video\/|http:\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
+	    media.type  = "vimeo";
+	    media.id    = vimeo_id;
+	    success = true;
+	}
+	else if (url.match('http(s)://player\.soundcloud\.com')) {
+	    soundcloud_url = unescape(url.split(/value="/)[1].split(/["]/)[0]);
+	    soundcloud_id = soundcloud_url.split(/tracks\//)[1].split(/[&"]/)[0];
+	    media.type  = "soundcloud";
+	    media.id    = soundcloud_id;
+	    success = true;
+	}
+	if (success) { return media; }
+	else { console.log("No valid media id detected"); }
+	return false;
 }
 
 //Checks the link to see if it is currently supported by QRL. Returns true if yes and false if no.
 function checkDomainSupport(link){
 	//Let the browser do some parsing
 	var parser = parseURL(link);
-	console.log("The video domain is: " + parser.hostname);
+	console.log("The video domain is: " + parser.type);
  
-	if(parser.hostname === "youtube.com"){
+	if(parser.type === "youtube"){
 		return true;
 	}
-	else if(parser.hostname === "soundcloud.com"){
+	else if(parser.type === "soundcloud"){
 		alert("We're sorry, we can only handle content from Youtube.com right now. Soundcloud support coming soon!");
 		return false;
 	}
+	else if(parser.type==="vimeo"){
+		alert("We're sorry, we can only handle content from Youtube.com right now. Vimeo support coming soon!");
+		return false;
+	}
 	else{
-		alert("We're sorry, we can only handle content from Youtube.com right now.");
+		alert("Youtube is currently the only supported content domain")
 		return false;
 	}
 }
@@ -79,10 +88,10 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo){
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info, tab){
 
-	//Makes queueContent object with the clicked URL, the time it was added, and a videoID
+	//Makes queueContent object with the clicked URL, the time it was added, and an id
 	var d = new Date();
-	var videoID = parseID(info.linkUrl);
-	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: videoID };
+	var id = parseURL(info.linkUrl).id;
+	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: id };
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);
