@@ -1,10 +1,16 @@
 QRL
 ==============
 [QRL.TheoBrowne.com](http://QRL.TheoBrowne.com)
+[Link to alpha on Chrome Web Store](https://chrome.google.com/webstore/detail/qrl-the-dynamic-url-queue/pdnadafbgcpgiameohjhphjpmadeeill)
 
 INTRODUCTION
 ------------
 The mildly practical content queueing system for your browser. A Chrome extension still very early in development. Now plays unprotected Youtube content!
+
+VERSION
+------------
+####v0.5
+Major bug fixes! We've switched storage solutions to Rhaboo.js, and now the majority of the functionality works fine. Let us know if you have any problems!
 
 INSTALLATION
 ------------

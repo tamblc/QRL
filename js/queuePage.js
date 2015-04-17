@@ -97,14 +97,13 @@ document.getElementById("clear").addEventListener("click", function(){
 
 //listener for skip
 document.getElementById("skip").addEventListener("click", function(){
-    //alert("Skip!");
     //load new video ID
     if (queueObj.cur_index+1 == queueObj.queue.length) {
         queueObj.write('cur_index', ++queueObj.cur_index);
         console.log("Last item in queue");
         chrome.tabs.getCurrent(function(tab){
             chrome.tabs.remove(tab.id);
-        });
+    });
     } else {
         queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
