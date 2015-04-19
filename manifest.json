@@ -1,15 +1,15 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
-  "name": "QRL",
+  "name": "QRL - The Dynamic URL Queue",
+  "short_name": "QRL",
   "description": "The mildly practical content queueing system for your browser.",
-  "version": "0.2",
+  "version": "0.5",
 
   "permissions": [
     "tabs",
     "contextMenus",
-    "storage",
-    "*://*.youtube.com/*"
+    "storage"
   ], 
   "icons": {
     "16": "images/icon-16.png",
@@ -20,9 +20,8 @@
   "background": {
     "scripts": ["js/bootstrap.js"]
   },
-  "page_action": {
-    "default_icon": "images/icon.png",
-    "default_title": "QRL"
+  "browser_action": {
+    "default_icon":{},
+    "default_title": "QRL - The Dynamic URL Queue"
   }
-
 }
