@@ -80,8 +80,8 @@ chrome.contextMenus.onClicked.addListener(function(info){
 
 	//Makes queueContent object with the clicked URL, the time it was added, and an id
 	var d = new Date();
-	var id = parseURL(info.linkUrl).id;
-	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: id };
+	var parsedURL = parseURL(info.linkUrl);
+	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), ID: parsedURL.id, type: parsedURL.media };
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);

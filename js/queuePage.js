@@ -36,7 +36,7 @@ function makeVideo(){
     }
     populateQueue();
     player = new YT.Player('player', {
-        videoId: queueObj.queue[queueObj.cur_index].videoID,
+        videoId: queueObj.queue[queueObj.cur_index].ID,
         height: '100%',
         width: '100%',
         events: {
@@ -57,7 +57,7 @@ function populateQueue(){
         console.log('Adding ' + x);
         Document = Document + 
         "<img class=\"" + queueClass +
-        "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+        "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].ID + "/0.jpg\" /><br>";
     }
 
     document.getElementById("queue").innerHTML = Document;
@@ -107,7 +107,7 @@ document.getElementById("skip").addEventListener("click", function(){
     } else {
         queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+        player.videoId = queueObj.queue[queueObj.cur_index].ID;
         player.loadVideoById(player.videoId, 0, "large");
     }
 });
@@ -137,7 +137,7 @@ function onPlayerStateChange(event) {
 
         populateQueue();
         console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+        player.videoId = queueObj.queue[queueObj.cur_index].ID;
         console.log(player.videoId);
         console.log("Loading video by ID");
         player.loadVideoById(player.videoId, 0, "large");
