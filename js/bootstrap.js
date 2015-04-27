@@ -1,6 +1,9 @@
 //---------------------------------
 // Functions
-
+function ginit() {
+    gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
+    gapi.client.load("youtube", "v3")
+}
 //The function to create the queue tab
 function openQueueTab(queueContent, nextFlag){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
