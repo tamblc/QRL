@@ -73,7 +73,11 @@ chrome.runtime.onMessage.addListener(
             queueObj.write('queue', []);
             queueObj.write('cur_index', 0);
         }
-        queueObj.queue.push(request.queueContent)
+        if(request.addNext){
+            queueObj.queue.splice(queueObj.cur_index, 0, request.queueContent);
+        }else{
+            queueObj.queue.push(request.queueContent);
+        }
         populateQueue();
         if(request.newTab){
             makeVideo();

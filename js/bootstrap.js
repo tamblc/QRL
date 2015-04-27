@@ -2,12 +2,12 @@
 // Functions
 
 //The function to create the queue tab
-function openQueueTab(queueContent){
+function openQueueTab(queueContent, nextFlag){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
   		console.log("attempted opening tab");
   		queueTabId = tab.id;
   		console.log("queueTabId is: " + queueTabId);
-  		var request = { queueContent: queueContent, newTab: true};
+  		var request = { queueContent: queueContent, newTab: true, addNext: nextFlag};
   		chrome.tabs.sendMessage(queueTabId, request);
 	});
 }
@@ -89,13 +89,23 @@ chrome.contextMenus.onClicked.addListener(function(info){
 	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue and then syncs it to the browser.
 	var result = checkDomainSupport(queueContent.url);
 	if(result){
-		console.log("Object supported, adding to queue");
-		if(queueTabId == null){
-			openQueueTab(queueContent);
-		}else{
-			chrome.tabs.sendMessage(queueTabId, { queueContent: queueContent, newTab: false });
+		if(info.menuItemId == "last"){
+			console.log("Object supported, adding to back of queue");
+			if(queueTabId == null){
+				openQueueTab(queueContent, false);
+			}else{
+				chrome.tabs.sendMessage(queueTabId, { queueContent: queueContent, newTab: false, addNext: false });
+			}
+		}else if(info.menuItemId == "next"){
+			console.log("Object supported, inserting to front of queue");
+			if(queueTabId == null){
+				openQueueTab(queueContent, true);
+			}else{
+				chrome.tabs.sendMessage(queueTabId, { queueContent: queueContent, newTab: false, addNext: true });
+			}
 		}
 	}
+	
 
 });
 
@@ -119,6 +129,11 @@ var acceptedURLs = ["*://*.youtube.com/*",
 var validContext = "Add to queue";
 
 chrome.contextMenus.create({	"title": validContext, 
+								"id": "last",
+								"contexts": contexts,
+								"documentUrlPatterns": acceptedURLs});
+chrome.contextMenus.create({	"title": "Play Next", 
+								"id": "next",
 								"contexts": contexts,
 								"documentUrlPatterns": acceptedURLs});
 
