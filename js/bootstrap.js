@@ -8,7 +8,30 @@ function openQueueTab(queueContent, nextFlag){
   		queueTabId = tab.id;
   		console.log("queueTabId is: " + queueTabId);
   		var request = { queueContent: queueContent, newTab: true, addNext: nextFlag};
-  		chrome.tabs.sendMessage(queueTabId, request);
+
+  		// Called when the tab is ready.
+	    var onready = function() {
+	        onready = function() {}; // Run once.
+	        chrome.tabs.onUpdated.removeListener(listener);
+	        // Now the tab is ready!
+	        chrome.tabs.sendMessage(tab.id, request);
+	    };
+
+	    // Detect update
+	    chrome.tabs.onUpdated.addListener(listener);
+
+	    // Detect create (until crbug.com/411225 is fixed).
+	    chrome.tabs.get(tab.id, function(tab) {
+	        if (tab.status === 'complete') {
+	            onready();
+	        }
+	    });
+
+	    function listener(tabId, changeInfo) {
+	        if (tabId === tab.id && changeInfo.status == 'complete') {
+	            onready();
+	        }
+	    }
 	});
 }
 
