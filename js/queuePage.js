@@ -72,6 +72,18 @@ chrome.runtime.onMessage.addListener(
         if(queueObj.queue === undefined){
             queueObj.write('queue', []);
             queueObj.write('cur_index', 0);
+        }else if(request.queueContent === null){
+            console.log("blank queue content");
+            console.log(queueObj.queue.length);
+            if(queueObj.queue.length == 0){
+                console.log("set blank");
+                blank = true;
+                return;
+            }else{
+                populateQueue();
+                makeVideo();
+                return;
+            }
         }
         if(request.addNext){
             queueObj.queue.splice(queueObj.cur_index, 0, request.queueContent);
@@ -79,7 +91,8 @@ chrome.runtime.onMessage.addListener(
             queueObj.queue.push(request.queueContent);
         }
         populateQueue();
-        if(request.newTab){
+        if(request.newTab || blank){
+            blank = false;
             makeVideo();
         }
 });
@@ -120,6 +133,7 @@ document.getElementById("skip").addEventListener("click", function(){
 // Main
 var player;
 var halt = true;
+var blank;
 var queueObj = Rhaboo.persistent('queueObj');
 if(queueObj.cur_index === undefined){
     queueObj.write('cur_index', 0);
