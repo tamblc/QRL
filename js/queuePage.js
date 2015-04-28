@@ -3,22 +3,20 @@
 function ginit() {
     gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
     gapi.client.load("youtube", "v3")
+    console.log("Google API key set");
 }
-function loadScript() {
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src = "https://apis.google.com/js/client.js";
-  document.body.appendChild(script);
-}
-// Load YouTube Frame API & SoundCloud API
+// Load YouTube Frame API & SoundCloud API & Google API
 (function(){ //Closure, to not leak to the scope
     var ytapi = document.createElement("script");
     var scapi = document.createElement("script");
-    ytapi.src = "https://www.youtube.com/player_api"; /* Load YT API*/
-    scapi.src = "https://w.soundcloud.com/player/api.js"; /* Load SC Api*/
+    var ggapi = document.createElement("script");
+    ytapi.src = "https://www.youtube.com/player_api";       /* Load YT API*/
+    scapi.src = "//connect.soundcloud.com/sdk.js";   /* Load SC API*/
+    ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/ 
     var before = document.getElementsByTagName("script")[0];
     before.parentNode.insertBefore(ytapi, before);
     before.parentNode.insertBefore(scapi, before);
+    before.parentNode.insertBefore(ggapi, before);
 })();
 
 //Loads the Youtube player when it's ready
@@ -151,8 +149,6 @@ if(queueObj.cur_index === undefined){
     queueObj.write('cur_index', 0);
 }
 
-//loadScript();
-//ginit();
 
 //Runs when video state changes, handles videos ending
 function onPlayerStateChange(event) {  
