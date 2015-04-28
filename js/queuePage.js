@@ -10,12 +10,15 @@ function loadScript() {
   script.src = "https://apis.google.com/js/client.js";
   document.body.appendChild(script);
 }
-// Load YouTube Frame API
+// Load YouTube Frame API & SoundCloud API
 (function(){ //Closure, to not leak to the scope
-    var s = document.createElement("script");
-    s.src = "https://www.youtube.com/player_api"; /* Load Player API*/
+    var ytapi = document.createElement("script");
+    var scapi = document.createElement("script");
+    ytapi.src = "https://www.youtube.com/player_api"; /* Load YT API*/
+    scapi.src = "https://w.soundcloud.com/player/api.js"; /* Load SC Api*/
     var before = document.getElementsByTagName("script")[0];
-    before.parentNode.insertBefore(s, before);
+    before.parentNode.insertBefore(ytapi, before);
+    before.parentNode.insertBefore(scapi, before);
 })();
 
 //Loads the Youtube player when it's ready
