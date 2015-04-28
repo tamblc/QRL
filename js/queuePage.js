@@ -1,6 +1,15 @@
 //---------------------------------
 // Functions
-
+function ginit() {
+    gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
+    gapi.client.load("youtube", "v3")
+}
+function loadScript() {
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "https://apis.google.com/js/client.js";
+  document.body.appendChild(script);
+}
 // Load YouTube Frame API
 (function(){ //Closure, to not leak to the scope
     var s = document.createElement("script");
@@ -75,7 +84,7 @@ chrome.runtime.onMessage.addListener(
         }else if(request.queueContent === null){
             console.log("blank queue content");
             console.log(queueObj.queue.length);
-            if(queueObj.queue.length == 0){
+            if(queueObj.queue.length == 0 || queueObj.cur_index == queueObj.queue.length){
                 console.log("set blank");
                 blank = true;
                 return;
@@ -86,7 +95,7 @@ chrome.runtime.onMessage.addListener(
             }
         }
         if(request.addNext){
-            queueObj.queue.splice(queueObj.cur_index, 0, request.queueContent);
+            queueObj.queue.splice(queueObj.cur_index+1, 0, request.queueContent);
         }else{
             queueObj.queue.push(request.queueContent);
         }
@@ -138,6 +147,9 @@ var queueObj = Rhaboo.persistent('queueObj');
 if(queueObj.cur_index === undefined){
     queueObj.write('cur_index', 0);
 }
+
+//loadScript();
+//ginit();
 
 //Runs when video state changes, handles videos ending
 function onPlayerStateChange(event) {  
