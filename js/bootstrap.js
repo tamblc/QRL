@@ -45,13 +45,13 @@ function parseURL(url) {
 	    media.id    = youtube_id;
 	    success = true;
 	}
-	else if (url.match('http(s)://(player.)vimeo\.com')) {
+	else if (url.match('http(s)://(player.)?vimeo\.com')) {
 	    vimeo_id = url.split(/video\/|http:\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
 	    media.type  = "vimeo";
 	    media.id    = vimeo_id;
 	    success = true;
 	}
-	else if (url.match('http(s)://(player.)soundcloud\.com')) {
+	else if (url.match('http(s)://(player.)?soundcloud\.com')) {
 	    soundcloud_id = url.split("\.com")[1];
 	    media.type  = "soundcloud";
 	    media.id    = soundcloud_id;
