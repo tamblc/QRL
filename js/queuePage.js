@@ -81,8 +81,8 @@ function handleVimeo(index){
 function skipTo(index){
     if(queueObj.queue[index].domain === "youtube"){
         queueObj.write('cur_index', index);
-        player.videoId = queueObj.queue[index].videoID;
-        player.loadVideoById(player.videoId, 0, "large");
+        youtubePlayer.videoId = queueObj.queue[index].videoID;
+        youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
         populateQueue();
     }else if(queueObj.queue[index].domain === "soundcloud"){
         handleSoundcloud(index);
@@ -221,7 +221,7 @@ document.getElementById("skip").addEventListener("click", function(){
             handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
             youtubePlayer.videoId = queueObj.queue[queueObj.cur_index].videoID;
-            youtubePlayer.loadVideoById(player.videoId, 0, "large");
+            youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
         }
     }
 });
