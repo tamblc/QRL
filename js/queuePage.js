@@ -2,8 +2,19 @@
 // Functions
 function ginit() {
     gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
-    gapi.client.load("youtube", "v3")
+    gapi.client.load("youtube", "v3");
     console.log("Google API key set");
+    scinit();
+}
+function scinit() {
+    SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
+    console.log("Soundcloud API loaded");
+    SC.get("/tracks/293", 
+            function(track){
+                console.log(track);
+                embedSoundcloud(track);
+            })
+    
 }
 // Load YouTube Frame API & SoundCloud API & Google API
 (function(){ //Closure, to not leak to the scope
@@ -11,7 +22,7 @@ function ginit() {
     var scapi = document.createElement("script");
     var ggapi = document.createElement("script");
     ytapi.src = "https://www.youtube.com/player_api";       /* Load YT API*/
-    scapi.src = "//connect.soundcloud.com/sdk.js";   /* Load SC API*/
+    scapi.src = "https://connect.soundcloud.com/sdk.js";   /* Load SC API*/
     ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/ 
     var before = document.getElementsByTagName("script")[0];
     before.parentNode.insertBefore(ytapi, before);
@@ -36,6 +47,11 @@ function printQueue(queue){
     for(var i = 0; i < queue.length; i++){
         console.log(queue[i].url + "\n");
     }
+}
+
+function embedSoundcloud(track){
+    SC.oEmbed("http://soundcloud.com/forss/flickermood", {auto_play: true}, function(response){
+        console.log(response)});
 }
 
 //Helper function to make videos. Only runs after it's been called twice
@@ -148,7 +164,6 @@ var queueObj = Rhaboo.persistent('queueObj');
 if(queueObj.cur_index === undefined){
     queueObj.write('cur_index', 0);
 }
-
 
 //Runs when video state changes, handles videos ending
 function onPlayerStateChange(event) {  
