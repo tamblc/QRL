@@ -28,6 +28,8 @@ function vimeoinit(){
     before.parentNode.insertBefore(ytapi, before);
     before.parentNode.insertBefore(scapi, before);
     before.parentNode.insertBefore(ggapi, before);
+    before.parentNode.insertBefore(vimeoapi, before);
+
 })();
 
 //Loads the Youtube player when it's ready
@@ -183,6 +185,8 @@ document.getElementById("skip").addEventListener("click", function(){
         populateQueue();
         if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
             handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+            handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
             player.videoId = queueObj.queue[queueObj.cur_index].videoID;
             player.loadVideoById(player.videoId, 0, "large");
@@ -216,6 +220,8 @@ function onPlayerStateChange(event) {
         populateQueue();
         if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
             handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+            handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube"){
             console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
             player.videoId = queueObj.queue[queueObj.cur_index].videoID;
