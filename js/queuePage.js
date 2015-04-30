@@ -23,7 +23,7 @@ function vimeoinit(){
     ytapi.src = "https://www.youtube.com/player_api";       /* Load YT API*/
     scapi.src = "https://connect.soundcloud.com/sdk.js";   /* Load SC API*/
     ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/
-    vimeoapi.src = "http://player.vimeo.com/video/VIDEO_ID?api=1"; 
+    vimeoapi.src = "https://player.vimeo.com/video/VIDEO_ID?api=1"; 
     var before = document.getElementsByTagName("script")[0];
     before.parentNode.insertBefore(ytapi, before);
     before.parentNode.insertBefore(scapi, before);
