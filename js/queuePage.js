@@ -8,16 +8,22 @@ function ginit() {
 }
 function scinit() {
     SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
-    console.log("Soundcloud API loaded");    
+    console.log("Soundcloud API loaded");  
+    vimeoinit();  
+}
+function vimeoinit(){
+    console.log("Vimeo API loaded");
 }
 // Load YouTube Frame API & SoundCloud API & Google API
 (function(){ //Closure, to not leak to the scope
     var ytapi = document.createElement("script");
     var scapi = document.createElement("script");
     var ggapi = document.createElement("script");
+    var vimeoapi = document.createElement("script");
     ytapi.src = "https://www.youtube.com/player_api";       /* Load YT API*/
     scapi.src = "https://connect.soundcloud.com/sdk.js";   /* Load SC API*/
-    ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/ 
+    ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/
+    vimeoapi.src = "http://player.vimeo.com/video/VIDEO_ID?api=1"; 
     var before = document.getElementsByTagName("script")[0];
     before.parentNode.insertBefore(ytapi, before);
     before.parentNode.insertBefore(scapi, before);
@@ -57,6 +63,11 @@ function handleSoundcloud(index){
     skipTo(index+1);
 }
 
+function handleVimeo(index){
+    alert("Sorry, we're working on playing Vimeo content!");
+    skipTo(index+1);
+}
+
 function skipTo(index){
     if(queueObj.queue[index].domain === "youtube"){
         queueObj.write('cur_index', index);
@@ -65,7 +76,8 @@ function skipTo(index){
         populateQueue();
     }else if(queueObj.queue[index].domain === "soundcloud"){
         handleSoundcloud(index);
-    }
+    }else if(queueObj.queue[index].domain === "vimeo"){
+        handleVimeo(index);
 }
 
 //Helper function to make videos. Only runs after it's been called twice
@@ -101,7 +113,8 @@ function populateQueue(){
             "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
         }else if(queueObj.queue[x].domain === "soundcloud"){
             //TODO: Get thumbnails for soundcloud songs
-        }
+        }else if(queueObj.queue[x].domain === "vimeo"){
+            //TODO: Get thumbnails for vimeo content
     }
 
     document.getElementById("queue").innerHTML = Document;
