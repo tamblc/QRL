@@ -1,13 +1,38 @@
 //---------------------------------
 // Functions
 
-// Load YouTube Frame API
+// Load YouTube Frame API & SoundCloud API & Google API & Vimeo API
 (function(){ //Closure, to not leak to the scope
-    var s = document.createElement("script");
-    s.src = "https://www.youtube.com/player_api"; /* Load Player API*/
+    var ytapi = document.createElement("script");
+    var scapi = document.createElement("script");
+    var ggapi = document.createElement("script");
+    var vimeoapi = document.createElement("script");
+    ytapi.src = "https://www.youtube.com/player_api";       /* Load YT API*/
+    scapi.src = "https://connect.soundcloud.com/sdk.js";   /* Load SC API*/
+    ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/
+    vimeoapi.src = "https://player.vimeo.com/video/VIDEO_ID?api=1"; 
     var before = document.getElementsByTagName("script")[0];
-    before.parentNode.insertBefore(s, before);
+    before.parentNode.insertBefore(ytapi, before);
+    before.parentNode.insertBefore(scapi, before);
+    before.parentNode.insertBefore(ggapi, before);
+    before.parentNode.insertBefore(vimeoapi, before);
+
 })();
+
+function ginit() {
+    gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
+    gapi.client.load("youtube", "v3");
+    console.log("Google API key set");
+    scinit();
+}
+function scinit() {
+    SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
+    console.log("Soundcloud API loaded");  
+    vimeoinit();  
+}
+function vimeoinit(){
+    console.log("Vimeo API loaded");
+}
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
@@ -17,7 +42,13 @@ function onYouTubePlayerAPIReady() {
 
 //Plays video when the player is loaded
 function onPlayerReady(event) {
-    event.target.playVideo();
+    if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+        handleSoundcloud(queueObj.cur_index);
+    }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+        handleVimeo(queueObj.cur_index);
+    }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
+        event.target.playVideo();
+    }
 }
 
 //Prints the current queue, for debugging
@@ -25,6 +56,48 @@ function printQueue(queue){
     console.log("Printing Queue \n");
     for(var i = 0; i < queue.length; i++){
         console.log(queue[i].url + "\n");
+    }
+}
+
+function embedSoundcloud(track){
+    SC.oEmbed("http://soundcloud.com/forss/flickermood", {auto_play: true}, function(response){
+        console.log(response)});
+}
+
+function handleSoundcloud(index){
+    alert("Sorry, we're working on playing Soundcloud content!");
+    skipTo(index+1);
+}
+
+function handleVimeo(index){
+    alert("Sorry, we're working on playing Vimeo content!");
+    skipTo(index+1);
+}
+
+function skipTo(index){
+    if(queueObj.queue[index].domain === "youtube"){
+        queueObj.write('cur_index', index);
+        player.videoId = queueObj.queue[index].videoID;
+        player.loadVideoById(player.videoId, 0, "large");
+        populateQueue();
+    }else if(queueObj.queue[index].domain === "soundcloud"){
+        handleSoundcloud(index);
+    }else if(queueObj.queue[index].domain === "vimeo"){
+        handleVimeo(index);
+    }
+}
+
+function remove(index){
+    if(index >= queueObj.length){
+        console.log("ERR: remove("+index+") - index out of bounds");
+        return;
+    }
+    if(index == queueObj.cur_index){
+        skipTo(index+1);
+        queueObj.queue.splice(index, 1);
+    }else{
+        queueObj.queue.splice(index, 1);
+        populateQueue();    
     }
 }
 
@@ -43,9 +116,7 @@ function makeVideo(){
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
         }
-
     });
-
 }
 
 //Populates the html for the Queue on the page
@@ -54,12 +125,19 @@ function populateQueue(){
     var Document = "";
     for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
         var queueClass = "thumbnail";
-        console.log('Adding ' + x);
-        Document = Document + 
-        "<img class=\"" + queueClass +
-        "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+        if(queueObj.queue[x].domain === "youtube"){
+            console.log('Adding ' + x);
+            Document = Document + 
+            "<img id=\"" + x + "\" class=\"" +
+            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+        }else if(queueObj.queue[x].domain === "soundcloud"){
+                        Document = Document + 
+            "<img id=\"" + x + "\" class=\"" +
+            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"http://africaninamerica.org/wp-content/uploads/2014/04/soundcloud-logo-transparent.png\" /><br>";
+        }else if(queueObj.queue[x].domain === "vimeo"){
+            //TODO: Get thumbnails for vimeo content
+        }
     }
-
     document.getElementById("queue").innerHTML = Document;
 }
 
@@ -72,27 +150,40 @@ chrome.runtime.onMessage.addListener(
         if(queueObj.queue === undefined){
             queueObj.write('queue', []);
             queueObj.write('cur_index', 0);
+        }else if(request.queueContent === null){
+            console.log("blank queue content");
+            console.log(queueObj.queue.length);
+            if(queueObj.queue.length == 0 || queueObj.cur_index == queueObj.queue.length){
+                console.log("set blank");
+                blank = true;
+                return;
+            }else{
+                populateQueue();
+                makeVideo();
+                return;
+            }
         }
-        queueObj.queue.push(request.queueContent)
+        if(request.addNext){
+            queueObj.queue.splice(queueObj.cur_index+1, 0, request.queueContent);
+        }else{
+            queueObj.queue.push(request.queueContent);
+        }
         populateQueue();
-        if(request.newTab){
+        if(request.newTab || blank){
+            blank = false;
             makeVideo();
         }
 });
 
 //listener for clear
 document.getElementById("clear").addEventListener("click", function(){
-
     if (confirm("Are you sure you want to clear the queue? (This is permanent)")) {
-
     queueObj.write('queue', []);
     queueObj.write('cur_index', 0);
     console.log("Queue has been cleared.");
     chrome.tabs.getCurrent(function(tab){
         chrome.tabs.remove(tab.id);
-    });
-}
-
+    });}
 });
 
 //listener for skip
@@ -107,8 +198,14 @@ document.getElementById("skip").addEventListener("click", function(){
     } else {
         queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-        player.loadVideoById(player.videoId, 0, "large");
+        if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+            handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+            handleVimeo(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
+            player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            player.loadVideoById(player.videoId, 0, "large");
+        }
     }
 });
 
@@ -116,6 +213,7 @@ document.getElementById("skip").addEventListener("click", function(){
 // Main
 var player;
 var halt = true;
+var blank;
 var queueObj = Rhaboo.persistent('queueObj');
 if(queueObj.cur_index === undefined){
     queueObj.write('cur_index', 0);
@@ -134,12 +232,17 @@ function onPlayerStateChange(event) {
            return;
         }
         queueObj.write('cur_index', ++queueObj.cur_index);     
-
         populateQueue();
-        console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-        console.log(player.videoId);
-        console.log("Loading video by ID");
-        player.loadVideoById(player.videoId, 0, "large");
+        if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+            handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+            handleVimeo(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "youtube"){
+            console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
+            player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            console.log(player.videoId);
+            console.log("Loading video by ID");
+            player.loadVideoById(player.videoId, 0, "large");
+        }
     }
 }
