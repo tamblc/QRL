@@ -37,6 +37,7 @@ function openQueueTab(queueContent, nextFlag){
 function parseURL(url) {
 	var success = false;
 	var media   = {};
+	//literal regex magic
 	if (url.match('http(s)://(www.)?youtube|youtu\.be')) {
 	    if (url.match('embed')) { youtube_id = url.split(/embed\//)[1].split('"')[0]; }
 	    else { youtube_id = url.split(/v\/|v=|youtu\.be\//)[1].split(/[?&]/)[0]; }
@@ -44,15 +45,14 @@ function parseURL(url) {
 	    media.id    = youtube_id;
 	    success = true;
 	}
-	else if (url.match('http(s)://(player.)?vimeo\.com')) {
+	else if (url.match('http(s)://(player.)vimeo\.com')) {
 	    vimeo_id = url.split(/video\/|http:\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
 	    media.type  = "vimeo";
 	    media.id    = vimeo_id;
 	    success = true;
 	}
-	else if (url.match('http(s)://player\.soundcloud\.com')) {
-	    soundcloud_url = unescape(url.split(/value="/)[1].split(/["]/)[0]);
-	    soundcloud_id = soundcloud_url.split(/tracks\//)[1].split(/[&"]/)[0];
+	else if (url.match('http(s)://(player.)soundcloud\.com')) {
+	    soundcloud_id = url.split("\.com")[1];
 	    media.type  = "soundcloud";
 	    media.id    = soundcloud_id;
 	    success = true;
@@ -72,8 +72,7 @@ function checkDomainSupport(link){
 		return true;
 	}
 	else if(parser.type === "soundcloud"){
-		alert("We're sorry, we can only handle content from Youtube.com right now. Soundcloud support coming soon!");
-		return false;
+		return true;
 	}
 	else if(parser.type==="vimeo"){
 		alert("We're sorry, we can only handle content from Youtube.com right now. Vimeo support coming soon!");
