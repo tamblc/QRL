@@ -9,6 +9,11 @@ The mildly practical content queueing system for your browser. A Chrome extensio
 
 VERSION
 ------------
+####v0.6
+Soundcloud support has begun! The API hasn't been fully hooked up yet, so you have to skip the track to go to the next bit of content.
+
+We also fully implemented video removal via a double-click, but sadly, Chrome's horrific permissions prevent our code from running. We're trying to make our solution not in-line, as that should fix it, but that's not easy for dynamic content.
+
 ####v0.5
 Major bug fixes! We've switched storage solutions to Rhaboo.js, and now the majority of the functionality works fine. Let us know if you have any problems!
 
