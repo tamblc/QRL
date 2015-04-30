@@ -69,8 +69,11 @@ function embedSoundcloud(track){
 }
 
 function handleSoundcloud(index){
-    alert("Sorry, we're working on playing Soundcloud content!");
-    skipTo(index+1);
+    hidePlayers();
+
+    var scPlayer = document.getElementById("soundcloudPlayer");
+    scPlayer.style.display = "";
+
 }
 
 function handleVimeo(index){
@@ -213,6 +216,10 @@ document.getElementById("skip").addEventListener("click", function(){
             chrome.tabs.remove(tab.id);
     });
     } else {
+        if(queueObj.queue[queueObj.cur_index].domain !== "youtube"){
+            hidePlayers();
+            makeVideo();
+        }
         queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
         if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
