@@ -87,6 +87,20 @@ function skipTo(index){
     }
 }
 
+function remove(index){
+    if(index >= queueObj.length){
+        console.log("ERR: remove("+index+") - index out of bounds");
+        return;
+    }
+    if(index == queueObj.cur_index){
+        skipTo(index+1);
+        queueObj.queue.splice(index, 1);
+    }else{
+        queueObj.queue.splice(index, 1);
+        populateQueue();    
+    }
+}
+
 //Helper function to make videos. Only runs after it's been called twice
 function makeVideo(){
     if(halt){
@@ -114,8 +128,8 @@ function populateQueue(){
         if(queueObj.queue[x].domain === "youtube"){
             console.log('Adding ' + x);
             Document = Document + 
-            "<img class=\"" + queueClass +
-            "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+            "<img id=\"" + x + "\" class=\"" +
+            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
         }else if(queueObj.queue[x].domain === "soundcloud"){
             //TODO: Get thumbnails for soundcloud songs
         }else if(queueObj.queue[x].domain === "vimeo"){
