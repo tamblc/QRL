@@ -119,14 +119,9 @@ function hidePlayers(){
 
 //Helper function to make videos. Only runs after it's been called twice
 function makeVideo(){
-    if(halt){
-      halt = false;
-      return;
-    }
 
-    hidePlayers();
     populateQueue();
-    player = new YT.Player('youtubePlayer', {
+    youtubePlayer = new YT.Player('youtubePlayer', {
         videoId: queueObj.queue[queueObj.cur_index].videoID,
         height: '100%',
         width: '100%',
@@ -221,17 +216,18 @@ document.getElementById("skip").addEventListener("click", function(){
         }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
             handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
-            player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-            player.loadVideoById(player.videoId, 0, "large");
+            youtubePlayer.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            youtubePlayer.loadVideoById(player.videoId, 0, "large");
         }
     }
 });
 
 //---------------------------------
 // Main
-var player;
+var youtubePlayer;
 var halt = true;
 var blank;
+hidePlayers();
 var queueObj = Rhaboo.persistent('queueObj');
 if(queueObj.cur_index === undefined){
     queueObj.write('cur_index', 0);
@@ -256,11 +252,11 @@ function onPlayerStateChange(event) {
         }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
             handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube"){
-            console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
-            player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-            console.log(player.videoId);
+            console.log("Current videoId is: " + youtubePlayer.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
+            youtubePlayer.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            console.log(youtubePlayer.videoId);
             console.log("Loading video by ID");
-            player.loadVideoById(player.videoId, 0, "large");
+            youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
         }
     }
 }
