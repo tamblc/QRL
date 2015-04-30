@@ -131,7 +131,9 @@ function populateQueue(){
             "<img id=\"" + x + "\" class=\"" +
             queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
         }else if(queueObj.queue[x].domain === "soundcloud"){
-            //TODO: Get thumbnails for soundcloud songs
+                        Document = Document + 
+            "<img id=\"" + x + "\" class=\"" +
+            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"http://africaninamerica.org/wp-content/uploads/2014/04/soundcloud-logo-transparent.png\" /><br>";
         }else if(queueObj.queue[x].domain === "vimeo"){
             //TODO: Get thumbnails for vimeo content
         }
