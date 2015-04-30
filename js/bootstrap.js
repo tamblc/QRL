@@ -38,9 +38,9 @@ function parseURL(url) {
 	var success = false;
 	var media   = {};
 	//literal regex magic
-	if (url.match('http(s)://(www.)?youtube|youtu\.be')) {
-	    if (url.match('embed')) { youtube_id = url.split(/embed\//)[1].split('"')[0]; }
-	    else { youtube_id = url.split(/v\/|v=|youtu\.be\//)[1].split(/[?&]/)[0]; }
+	if (url.match('http(s)://(www.)?youtube|youtu\.be')) { 
+		//seriously i thought i was going to start crying blood
+	    youtube_id = url.split(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/)[1];
 	    media.type  = "youtube";
 	    media.id    = youtube_id;
 	    success = true;
@@ -101,8 +101,8 @@ chrome.contextMenus.onClicked.addListener(function(info){
 
 	//Makes queueContent object with the clicked URL, the time it was added, and an id
 	var d = new Date();
-	var id = parseURL(info.linkUrl).id;
-	var queueContent = { url: info.linkUrl, timeAdded: d.getTime(), videoID: id };
+	var parsedMedia = parseURL(info.linkUrl);
+	var queueContent = { domain:parsedMedia.type, url: info.linkUrl, timeAdded: d.getTime(), videoID: parsedMedia.id};
 
 	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
 	console.log("Video ID for URL object is: " + queueContent.videoID);
