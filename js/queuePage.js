@@ -8,13 +8,7 @@ function ginit() {
 }
 function scinit() {
     SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
-    console.log("Soundcloud API loaded");
-    SC.get("/tracks/293", 
-            function(track){
-                console.log(track);
-                embedSoundcloud(track);
-            })
-    
+    console.log("Soundcloud API loaded");    
 }
 // Load YouTube Frame API & SoundCloud API & Google API
 (function(){ //Closure, to not leak to the scope
@@ -38,7 +32,11 @@ function onYouTubePlayerAPIReady() {
 
 //Plays video when the player is loaded
 function onPlayerReady(event) {
-    event.target.playVideo();
+    if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+        handleSoundcloud(queueObj.cur_index);
+    }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
+        event.target.playVideo();
+    }
 }
 
 //Prints the current queue, for debugging
@@ -52,6 +50,22 @@ function printQueue(queue){
 function embedSoundcloud(track){
     SC.oEmbed("http://soundcloud.com/forss/flickermood", {auto_play: true}, function(response){
         console.log(response)});
+}
+
+function handleSoundcloud(index){
+    alert("Sorry, we're working on playing Soundcloud content!");
+    skipTo(index+1);
+}
+
+function skipTo(index){
+    if(queueObj.queue[index].domain === "youtube"){
+        queueObj.write('cur_index', index);
+        player.videoId = queueObj.queue[index].videoID;
+        player.loadVideoById(player.videoId, 0, "large");
+        populateQueue();
+    }else if(queueObj.queue[index].domain === "soundcloud"){
+        handleSoundcloud(index);
+    }
 }
 
 //Helper function to make videos. Only runs after it's been called twice
@@ -80,10 +94,14 @@ function populateQueue(){
     var Document = "";
     for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
         var queueClass = "thumbnail";
-        console.log('Adding ' + x);
-        Document = Document + 
-        "<img class=\"" + queueClass +
-        "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+        if(queueObj.queue[x].domain === "youtube"){
+            console.log('Adding ' + x);
+            Document = Document + 
+            "<img class=\"" + queueClass +
+            "\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+        }else if(queueObj.queue[x].domain === "soundcloud"){
+            //TODO: Get thumbnails for soundcloud songs
+        }
     }
 
     document.getElementById("queue").innerHTML = Document;
@@ -150,8 +168,12 @@ document.getElementById("skip").addEventListener("click", function(){
     } else {
         queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-        player.loadVideoById(player.videoId, 0, "large");
+        if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+            handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
+            player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            player.loadVideoById(player.videoId, 0, "large");
+        }
     }
 });
 
@@ -178,12 +200,15 @@ function onPlayerStateChange(event) {
            return;
         }
         queueObj.write('cur_index', ++queueObj.cur_index);     
-
         populateQueue();
-        console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
-        player.videoId = queueObj.queue[queueObj.cur_index].videoID;
-        console.log(player.videoId);
-        console.log("Loading video by ID");
-        player.loadVideoById(player.videoId, 0, "large");
+        if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+            handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "youtube"){
+            console.log("Current videoId is: " + player.videoId + " (if undefined, the player object isn't accessible by onPlayerStateChange)");  
+            player.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            console.log(player.videoId);
+            console.log("Loading video by ID");
+            player.loadVideoById(player.videoId, 0, "large");
+        }
     }
 }
