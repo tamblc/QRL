@@ -59,20 +59,22 @@ function printQueue(queue){
     }
 }
 
-function soundcloudTrackID(url){
-    
-}
-
-function embedSoundcloud(track){
-    SC.oEmbed("http://soundcloud.com/forss/flickermood", {auto_play: true}, function(response){
-        console.log(response)});
-}
-
 function handleSoundcloud(index){
     hidePlayers();
 
     var scPlayer = document.getElementById("soundcloudPlayer");
     scPlayer.style.display = "";
+
+}
+
+function handleYoutube(index){
+    if(index > 0 && queueObj.queue[index-1].domain !== "youtube"){
+        hidePlayers();
+        var ytPlayer = document.getElementById("youtubePlayer");
+        ytPlayer.style.display = "";
+    }
+    youtubePlayer.videoId = queueObj.queue[index].videoID;
+    youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
 
 }
 
@@ -216,10 +218,6 @@ document.getElementById("skip").addEventListener("click", function(){
             chrome.tabs.remove(tab.id);
     });
     } else {
-        if(queueObj.queue[queueObj.cur_index].domain !== "youtube"){
-            hidePlayers();
-            makeVideo();
-        }
         queueObj.write('cur_index', ++queueObj.cur_index);
         populateQueue();
         if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
@@ -227,8 +225,7 @@ document.getElementById("skip").addEventListener("click", function(){
         }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
             handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
-            youtubePlayer.videoId = queueObj.queue[queueObj.cur_index].videoID;
-            youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
+            handleYoutube(queueObj.cur_index);
         }
     }
 });
