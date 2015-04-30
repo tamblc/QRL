@@ -7,9 +7,9 @@
     var scapi = document.createElement("script");
     var ggapi = document.createElement("script");
     var vimeoapi = document.createElement("script");
+    ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/
     ytapi.src = "https://www.youtube.com/player_api";       /* Load YT API*/
     scapi.src = "https://connect.soundcloud.com/sdk.js";   /* Load SC API*/
-    ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";     /* Load GG API*/
     vimeoapi.src = "https://player.vimeo.com/video/VIDEO_ID?api=1"; 
     var before = document.getElementsByTagName("script")[0];
     before.parentNode.insertBefore(ytapi, before);
@@ -59,6 +59,10 @@ function printQueue(queue){
     }
 }
 
+function soundcloudTrackID(url){
+    
+}
+
 function embedSoundcloud(track){
     SC.oEmbed("http://soundcloud.com/forss/flickermood", {auto_play: true}, function(response){
         console.log(response)});
@@ -101,14 +105,28 @@ function remove(index){
     }
 }
 
+function hidePlayers(){
+    var ytPlayer = document.getElementById("youtubePlayer");
+    var scPlayer = document.getElementById("soundcloudPlayer");
+    var vmPlayer = document.getElementById("vimeoPlayer");
+
+    //ytPlayer.style.display = "None";
+    console.log("Hiding elements!");
+    scPlayer.style.display = "None";
+    vmPlayer.style.display = "None";
+
+}
+
 //Helper function to make videos. Only runs after it's been called twice
 function makeVideo(){
     if(halt){
       halt = false;
       return;
     }
+
+    hidePlayers();
     populateQueue();
-    player = new YT.Player('player', {
+    player = new YT.Player('youtubePlayer', {
         videoId: queueObj.queue[queueObj.cur_index].videoID,
         height: '100%',
         width: '100%',
