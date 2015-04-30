@@ -75,8 +75,7 @@ function checkDomainSupport(link){
 		return true;
 	}
 	else if(parser.type==="vimeo"){
-		alert("We're sorry, we can only handle content from Youtube.com right now. Vimeo support coming soon!");
-		return false;
+		return true;
 	}
 	else{
 		alert("Youtube is currently the only supported content domain")
