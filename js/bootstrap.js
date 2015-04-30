@@ -46,7 +46,7 @@ function parseURL(url) {
 	    success = true;
 	}
 	else if (url.match('http(s)://(player.)?vimeo\.com')) {
-	    vimeo_id = url.split(/video\/|http:\/\/vimeo\.com\//)[1].split(/[?&]/)[0];
+	    vimeo_id = url.split("/").slice(-1)[0];
 	    media.type  = "vimeo";
 	    media.id    = vimeo_id;
 	    success = true;
