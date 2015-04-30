@@ -42,6 +42,8 @@ function onYouTubePlayerAPIReady() {
 function onPlayerReady(event) {
     if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
         handleSoundcloud(queueObj.cur_index);
+    }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+        handleVimeo(queueObj.cur_index);
     }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
         event.target.playVideo();
     }
