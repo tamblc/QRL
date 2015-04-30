@@ -82,6 +82,7 @@ function skipTo(index){
         handleSoundcloud(index);
     }else if(queueObj.queue[index].domain === "vimeo"){
         handleVimeo(index);
+    }
 }
 
 //Helper function to make videos. Only runs after it's been called twice
@@ -99,9 +100,7 @@ function makeVideo(){
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
         }
-
     });
-
 }
 
 //Populates the html for the Queue on the page
@@ -119,8 +118,8 @@ function populateQueue(){
             //TODO: Get thumbnails for soundcloud songs
         }else if(queueObj.queue[x].domain === "vimeo"){
             //TODO: Get thumbnails for vimeo content
+        }
     }
-
     document.getElementById("queue").innerHTML = Document;
 }
 
@@ -160,17 +159,13 @@ chrome.runtime.onMessage.addListener(
 
 //listener for clear
 document.getElementById("clear").addEventListener("click", function(){
-
     if (confirm("Are you sure you want to clear the queue? (This is permanent)")) {
-
     queueObj.write('queue', []);
     queueObj.write('cur_index', 0);
     console.log("Queue has been cleared.");
     chrome.tabs.getCurrent(function(tab){
         chrome.tabs.remove(tab.id);
-    });
-}
-
+    });}
 });
 
 //listener for skip
