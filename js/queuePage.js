@@ -110,8 +110,9 @@ function hidePlayers(){
     var scPlayer = document.getElementById("soundcloudPlayer");
     var vmPlayer = document.getElementById("vimeoPlayer");
 
-    //ytPlayer.style.display = "None";
+
     console.log("Hiding elements!");
+    ytPlayer.style.display = "None";
     scPlayer.style.display = "None";
     vmPlayer.style.display = "None";
 
@@ -119,6 +120,9 @@ function hidePlayers(){
 
 //Helper function to make videos. Only runs after it's been called twice
 function makeVideo(){
+
+    var ytPlayer = document.getElementById("youtubePlayer");
+    ytPlayer.style.display = "";
 
     populateQueue();
     youtubePlayer = new YT.Player('youtubePlayer', {
