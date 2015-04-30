@@ -78,7 +78,7 @@ function checkDomainSupport(link){
 		return true;
 	}
 	else{
-		alert("Youtube is currently the only supported content domain")
+		alert("You managed to break it somehow, congrats!")
 		return false;
 	}
 }
@@ -97,7 +97,6 @@ chrome.tabs.onRemoved.addListener(function(tabId){
 
 //Listens for contextMenu button clicks
 chrome.contextMenus.onClicked.addListener(function(info){
-
 	//Makes queueContent object with the clicked URL, the time it was added, and an id
 	var d = new Date();
 	var parsedMedia = parseURL(info.linkUrl);
@@ -125,14 +124,11 @@ chrome.contextMenus.onClicked.addListener(function(info){
 			}
 		}
 	}
-	
-
 });
-
 
 chrome.browserAction.onClicked.addListener(function(){
 	if (queueTabId==null)
-		openQueueTab(null);
+		openQueueTab(null, false);
 });
 
 //---------------------------------

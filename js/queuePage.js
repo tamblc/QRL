@@ -1,20 +1,7 @@
 //---------------------------------
 // Functions
-function ginit() {
-    gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
-    gapi.client.load("youtube", "v3");
-    console.log("Google API key set");
-    scinit();
-}
-function scinit() {
-    SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
-    console.log("Soundcloud API loaded");  
-    vimeoinit();  
-}
-function vimeoinit(){
-    console.log("Vimeo API loaded");
-}
-// Load YouTube Frame API & SoundCloud API & Google API
+
+// Load YouTube Frame API & SoundCloud API & Google API & Vimeo API
 (function(){ //Closure, to not leak to the scope
     var ytapi = document.createElement("script");
     var scapi = document.createElement("script");
@@ -31,6 +18,21 @@ function vimeoinit(){
     before.parentNode.insertBefore(vimeoapi, before);
 
 })();
+
+function ginit() {
+    gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
+    gapi.client.load("youtube", "v3");
+    console.log("Google API key set");
+    scinit();
+}
+function scinit() {
+    SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
+    console.log("Soundcloud API loaded");  
+    vimeoinit();  
+}
+function vimeoinit(){
+    console.log("Vimeo API loaded");
+}
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
