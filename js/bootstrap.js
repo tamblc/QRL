@@ -1,11 +1,13 @@
 //---------------------------------
 // Functions
-//The function to create the queue tab
+//---------------------------------
+
+//Opens the queue tab and passes it the queueContent and related flags
 function openQueueTab(queueContent, nextFlag){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
-  		console.log("attempted opening tab");
+  		//console.log("attempted opening tab");
   		queueTabId = tab.id;
-  		console.log("queueTabId is: " + queueTabId);
+  		//console.log("queueTabId is: " + queueTabId);
   		var request = { queueContent: queueContent, newTab: true, addNext: nextFlag};
 
   		// Called when the tab is ready.
@@ -34,6 +36,9 @@ function openQueueTab(queueContent, nextFlag){
 	});
 }
 
+//Ancient artifact found frozen in a glacier at the North Pole.
+//Rumored to be alien technology. Direct contact with the artifact has caused some researchers to go insane.
+//Parses the passed in URL and determines if it is from a supported domain and returns the relevant information
 function parseURL(url) {
 	var success = false;
 	var media   = {};
@@ -64,7 +69,7 @@ function parseURL(url) {
 
 //Checks the link to see if it is currently supported by QRL. Returns true if yes and false if no.
 function checkDomainSupport(link){
-	//Let the browser do some parsing
+	//Magic parsing function figures it out
 	var parser = parseURL(link);
 	console.log("The video domain is: " + parser.type);
  
@@ -78,34 +83,38 @@ function checkDomainSupport(link){
 		return true;
 	}
 	else{
-		alert("You managed to break it somehow, congrats!")
+		//alert("You managed to break it somehow, congrats!")
 		return false;
 	}
 }
 
 //---------------------------------
 // Listeners
+//---------------------------------
 
-//Listens for if queue tab is closed to reset queueTabOpen and queueTabId
+//Detects when the queue tab is closed to reset queueTabId
 chrome.tabs.onRemoved.addListener(function(tabId){
-	console.log("tab closed with id: " + tabId)
+	//console.log("tab closed with id: " + tabId)
 	if (tabId==queueTabId) {
 		queueTabId = null;
-		console.log("Queue tab has been removed.")
+		//console.log("Queue tab has been removed.")
 	}
 });
 
 //Listens for contextMenu button clicks
+//Handles creation of new content to be sent to the queue and opening the queue tab if it is closed
 chrome.contextMenus.onClicked.addListener(function(info){
-	//Makes queueContent object with the clicked URL, the time it was added, and an id
+	//Makes queueContent object with the clicked URL, the domain, the time it was added, and an id
 	var d = new Date();
 	var parsedMedia = parseURL(info.linkUrl);
 	var queueContent = { domain: parsedMedia.type, url: info.linkUrl, timeAdded: d.getTime(), videoID: parsedMedia.id};
 
-	console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
-	console.log("Video ID for URL object is: " + queueContent.videoID);
+	//console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
+	//console.log("Video ID for URL object is: " + queueContent.videoID);
 
-	//Check if the link that was clicked on is supported by QRL currently. If so, it adds it to the queue and then syncs it to the browser.
+	//Check if the link that was clicked on is supported by QRL currently
+	//If so, it wraps up a queueContent object and passes it to the queue tab
+	//Will open a queue tab if no queue tab is already open
 	var result = checkDomainSupport(queueContent.url);
 	if(result){
 		if(info.menuItemId == "last"){
@@ -126,6 +135,8 @@ chrome.contextMenus.onClicked.addListener(function(info){
 	}
 });
 
+//Browser action button listener
+//Just opens the queue tab if it isn't open
 chrome.browserAction.onClicked.addListener(function(){
 	if (queueTabId==null)
 		openQueueTab(null, false);
@@ -133,6 +144,7 @@ chrome.browserAction.onClicked.addListener(function(){
 
 //---------------------------------
 // Main
+//---------------------------------
 
 //Adds context items
 var contexts = ["selection", "link", "video"];
