@@ -5,9 +5,7 @@
 //Opens the queue tab and passes it the queueContent and related flags
 function openQueueTab(queueContent, nextFlag){
 	chrome.tabs.create({'url': chrome.extension.getURL("Queue.html")}, function(tab) {
-  		//console.log("attempted opening tab");
   		queueTabId = tab.id;
-  		//console.log("queueTabId is: " + queueTabId);
   		var request = { queueContent: queueContent, newTab: true, addNext: nextFlag};
 
   		// Called when the tab is ready.
@@ -83,7 +81,6 @@ function checkDomainSupport(link){
 		return true;
 	}
 	else{
-		//alert("You managed to break it somehow, congrats!")
 		return false;
 	}
 }
@@ -94,10 +91,8 @@ function checkDomainSupport(link){
 
 //Detects when the queue tab is closed to reset queueTabId
 chrome.tabs.onRemoved.addListener(function(tabId){
-	//console.log("tab closed with id: " + tabId)
 	if (tabId==queueTabId) {
 		queueTabId = null;
-		//console.log("Queue tab has been removed.")
 	}
 });
 
@@ -109,23 +104,18 @@ chrome.contextMenus.onClicked.addListener(function(info){
 	var parsedMedia = parseURL(info.linkUrl);
 	var queueContent = { domain: parsedMedia.type, url: info.linkUrl, timeAdded: d.getTime(), videoID: parsedMedia.id};
 
-	//console.log("New URL object was created with URL: " + queueContent.url + " at time " + queueContent.timeAdded);
-	//console.log("Video ID for URL object is: " + queueContent.videoID);
-
 	//Check if the link that was clicked on is supported by QRL currently
 	//If so, it wraps up a queueContent object and passes it to the queue tab
 	//Will open a queue tab if no queue tab is already open
 	var result = checkDomainSupport(queueContent.url);
 	if(result){
 		if(info.menuItemId == "last"){
-			console.log("Object supported, adding to back of queue");
 			if(queueTabId == null){
 				openQueueTab(queueContent, false);
 			}else{
 				chrome.tabs.sendMessage(queueTabId, { queueContent: queueContent, newTab: false, addNext: false });
 			}
 		}else if(info.menuItemId == "next"){
-			console.log("Object supported, inserting to front of queue");
 			if(queueTabId == null){
 				openQueueTab(queueContent, true);
 			}else{

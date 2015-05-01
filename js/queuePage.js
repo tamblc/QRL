@@ -24,28 +24,24 @@
 function ginit() {
     gapi.client.setApiKey("AIzaSyBwtrpyD5Bfxcohb6aDpwfhHK-040pEczc");
     gapi.client.load("youtube", "v3");
-    //console.log("Google API key set");
     scinit();
 }
 
 //Initializes the soundcloud API
 function scinit() {
-    SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});
-    //console.log("Soundcloud API loaded");  
+    SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});  
     vimeoinit();  
 }
 
-//###################################
-//TODO: Initial setup of Vimeo API
-//##### to allow for dynamic embeds
-//###################################
 function vimeoinit(){
-    //console.log("Vimeo API loaded");
+    //###################################
+    //TODO: Initial setup of Vimeo API
+    //##### to allow for dynamic embeds
+    //###################################
 }
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
-    //console.log("Youtube API Done!");
     makeVideo();
 }
 
@@ -130,11 +126,9 @@ function hidePlayers(){
     var scPlayer = document.getElementById("soundcloudPlayer");
     var vmPlayer = document.getElementById("vimeoPlayer");
 
-    //console.log("Hiding elements!");
     ytPlayer.style.display = "None";
     scPlayer.style.display = "None";
     vmPlayer.style.display = "None";
-
 }
 
 //Helper function to make videos. Only runs after it's been called twice
@@ -181,7 +175,6 @@ function populateQueue(){
 function onPlayerStateChange(event) {  
     console.log("playerStateChange = " + event.data);
     if(event.data === YT.PlayerState.ENDED) { 
-        //console.log("Video over, new video being loaded");
         //If last item in the queue, don't do anything
         if(queueObj.cur_index+1 == queueObj.queue.length)
         {
@@ -248,7 +241,6 @@ document.getElementById("clear").addEventListener("click", function(){
     if (confirm("Are you sure you want to clear the queue? (This is permanent)")) {
     queueObj.write('queue', []);
     queueObj.write('cur_index', 0);
-    //console.log("Queue has been cleared.");
     chrome.tabs.getCurrent(function(tab){
         chrome.tabs.remove(tab.id);
     });}
@@ -258,7 +250,6 @@ document.getElementById("clear").addEventListener("click", function(){
 //Skips the current playing item and plays the next item in the queue
 //If the current item is the last item in the queue, this closes the page
 document.getElementById("skip").addEventListener("click", function(){
-    //load new video ID
     if (queueObj.cur_index+1 == queueObj.queue.length) {
         queueObj.write('cur_index', ++queueObj.cur_index);
         chrome.tabs.getCurrent(function(tab){
