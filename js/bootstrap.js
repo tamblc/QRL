@@ -137,11 +137,14 @@ chrome.browserAction.onClicked.addListener(function(){
 //---------------------------------
 
 //Adds context items
-var contexts = ["selection", "link", "video"];
+var contexts = ["selection", "link","editable","frame", "video"];
 var acceptedURLs = ["*://*.youtube.com/*",
+					"*://www.youtube.com/*",
 					"*://youtube.com/*",
+					"*://youtu.be/",
 					"*://*.soundcloud.com/*",
 					"*://soundcloud.com/*",
+					"*://snd.sc/*",
 					"*://*.vimeo.com/*",
 					"*://vimeo.com/*"];
 var validContext = "Add to queue";
