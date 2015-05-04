@@ -151,9 +151,12 @@ var validContext = "Add to queue";
 
 chrome.contextMenus.create({	"title": validContext, 
 								"id": "last",
-								"contexts": contexts});
+								"contexts": contexts,
+								"targetUrlPatterns": acceptedURLs
+							});
 chrome.contextMenus.create({	"title": "Play Next", 
- 								"id": "next",
- 								"contexts": contexts});
+								"id": "next",
+								"contexts": contexts,
+								"targetUrlPatterns": acceptedURLs});
 
 var queueTabId = null; //Keeps track of if the queue tab is open in chrome
