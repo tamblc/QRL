@@ -141,7 +141,7 @@ var contexts = ["selection","link","editable","frame","video"];
 var acceptedURLs = ["*://*.youtube.com/*",
 					"*://www.youtube.com/*",
 					"*://youtube.com/*",
-					"*://youtu.be/",
+					"*://youtu.be/*",
 					"*://*.soundcloud.com/*",
 					"*://soundcloud.com/*",
 					"*://snd.sc/*",
