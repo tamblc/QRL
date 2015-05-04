@@ -137,7 +137,7 @@ chrome.browserAction.onClicked.addListener(function(){
 //---------------------------------
 
 //Adds context items
-var contexts = ["selection", "link","editable","frame", "video"];
+var contexts = ["selection","link","editable","frame","video"];
 var acceptedURLs = ["*://*.youtube.com/*",
 					"*://www.youtube.com/*",
 					"*://youtube.com/*",
@@ -151,11 +151,9 @@ var validContext = "Add to queue";
 
 chrome.contextMenus.create({	"title": validContext, 
 								"id": "last",
-								"contexts": contexts,
-								"documentUrlPatterns": acceptedURLs});
+								"contexts": contexts});
 chrome.contextMenus.create({	"title": "Play Next", 
-								"id": "next",
-								"contexts": contexts,
-								"documentUrlPatterns": acceptedURLs});
+ 								"id": "next",
+ 								"contexts": contexts});
 
 var queueTabId = null; //Keeps track of if the queue tab is open in chrome
