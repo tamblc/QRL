@@ -168,11 +168,11 @@ function populateQueue(){
             console.log('Adding ' + x);
             Document = Document + 
             "<img id=\"" + x + "\" class=\"" +
-            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://i.ytimg.com/vi/" + queueObj.queue[x].videoID + "/mqdefault.jpg\" /><br>";
         }else if(queueObj.queue[x].domain === "soundcloud"){
                         Document = Document + 
             "<img id=\"" + x + "\" class=\"" +
-            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"http://africaninamerica.org/wp-content/uploads/2014/04/soundcloud-logo-transparent.png\" /><br>";
+            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://soundofceres.files.wordpress.com/2014/08/soundcloud-4-512.gif\" \"width=320px\"/><br>";
         }else if(queueObj.queue[x].domain === "vimeo"){
             //TODO: Get thumbnails for vimeo content
         }
