@@ -40,6 +40,15 @@ function vimeoinit(){
     //###################################
 }
 
+//function to get soundcloud track number
+function getTrackID(trackUrl)
+    $.get('http://api.soundcloud.com/resolve.json?url=' + trackUrl + '&client_id=YOUR_CLIENT_ID', 
+        function (result) {
+            console.log(result);
+            return result;
+        }
+);
+
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
     makeVideo();
@@ -143,7 +152,8 @@ function makeVideo(){
         width: '100%',
         events: {
             'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
+            'onStateChange': onPlayerStateChange,
+            'onError': genericVideoSkip
         }
     });
 }
@@ -168,6 +178,25 @@ function populateQueue(){
         }
     }
     document.getElementById("queue").innerHTML = Document;
+}
+
+function genericVideoSkip(){
+    if (queueObj.cur_index+1 == queueObj.queue.length) {
+        queueObj.write('cur_index', ++queueObj.cur_index);
+        chrome.tabs.getCurrent(function(tab){
+            chrome.tabs.remove(tab.id);
+    });
+    } else {
+        queueObj.write('cur_index', ++queueObj.cur_index);
+        populateQueue();
+        if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
+            handleSoundcloud(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
+            handleVimeo(queueObj.cur_index);
+        }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
+            handleYoutube(queueObj.cur_index);
+        }
+    }
 }
 
 //Handler for state changes in the youtube player
@@ -250,22 +279,7 @@ document.getElementById("clear").addEventListener("click", function(){
 //Skips the current playing item and plays the next item in the queue
 //If the current item is the last item in the queue, this closes the page
 document.getElementById("skip").addEventListener("click", function(){
-    if (queueObj.cur_index+1 == queueObj.queue.length) {
-        queueObj.write('cur_index', ++queueObj.cur_index);
-        chrome.tabs.getCurrent(function(tab){
-            chrome.tabs.remove(tab.id);
-    });
-    } else {
-        queueObj.write('cur_index', ++queueObj.cur_index);
-        populateQueue();
-        if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
-            handleSoundcloud(queueObj.cur_index);
-        }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
-            handleVimeo(queueObj.cur_index);
-        }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
-            handleYoutube(queueObj.cur_index);
-        }
-    }
+    genericVideoSkip();
 });
 
 //---------------------------------
