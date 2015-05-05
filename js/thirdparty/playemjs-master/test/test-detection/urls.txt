@@ -1,0 +1,110 @@
+# Vimeo tracks
+
+/vi/46314116
+vimeo.com/46314116 # Man is not a Bird - IV - Live at le Klub, Paris
+//vimeo.com/46314116
+http://vimeo.com/46314116
+http://player.vimeo.com/video/23558972?title=0&byline=0&portrait=0
+player.vimeo.com/video/23558972?title=0&byline=0&portrait=0
+
+# MP3 tracks
+
+//www.tonycuffe.com/mp3/tail%20toddle.mp3
+http://www.tonycuffe.com/mp3/tail%20toddle.mp3
+/fi/http://www.tonycuffe.com/mp3/tail%20toddle.mp3
+https://archive.org/download/testmp3testfile/mpthreetest.mp3 # used to not pass (too short?)
+
+# Bandcamp tracks
+
+/bc/3260779883
+/bc/3260779883#http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=0faac63a94476bbdbf041d6cd0d8513e&id=3260779883&stream=1&ts=1393595969.0
+/bc/mambo/tokyo-tripot-2
+/bc/mambo/tokyo-tripot-2#http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=0faac63a94476bbdbf041d6cd0d8513e&id=3260779883&stream=1&ts=1393595969.0
+mambobertier.bandcamp.com/track/tokyo-tripot-2
+//mambobertier.bandcamp.com/track/tokyo-tripot-2
+http://mambobertier.bandcamp.com/track/tokyo-tripot-2
+https://manisnotabird.bandcamp.com/track/the-sounds-of-spring
+https://mambobertier.bandcamp.com/track/tokyo-tripot-2#http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=a5514873943b57d8d7b4567ee2f6295a&id=3049024530&stream=1&ts=1399281392.0
+http://theweakend.com/track/the-weakend-ft-chris-daddy-dave
+
+# Spotify tracks
+
+/sp/63wxaMojZaS69nYttu7Fh1
+spotify.com/track/63wxaMojZaS69nYttu7Fh1
+open.spotify.com/track/63wxaMojZaS69nYttu7Fh1
+//open.spotify.com/track/63wxaMojZaS69nYttu7Fh1
+http://open.spotify.com/track/63wxaMojZaS69nYttu7Fh1
+https://open.spotify.com/track/63wxaMojZaS69nYttu7Fh1
+https://open.spotify.com/track/63wxaMojZaS69nYttu7Fh1?test=1&pouet=0
+
+# Deezer tracks
+
+/dz/73414915
+deezer.com/track/73414915
+//deezer.com/track/73414915
+http://www.deezer.com/track/73414915
+https://www.deezer.com/track/73414915
+https://www.deezer.com/track/73414915?test=1&pouet=0
+
+# Jamendo tracks
+
+/ja/1115147
+jamendo.com/track/1115147
+//jamendo.com/track/1115147
+http://jamendo.com/track/1115147
+https://jamendo.com/track/1115147
+//www.jamendo.com/en/track/1115147/get-momentum
+
+# Dailymotion tracks
+
+/dm/x142x6e_jean-jean-love_music
+dailymotion.com/video/x142x6e_jean-jean-love_music
+//www.dailymotion.com/video/x142x6e_jean-jean-love_music
+http://www.dailymotion.com/video/x142x6e_jean-jean-love_music
+https://www.dailymotion.com/video/x142x6e_jean-jean-love_music
+https://www.dailymotion.com/video/x142x6e_jean-jean-love_music?test=1&pouet=0
+
+# Youtube tracks
+
+https://youtube.googleapis.com/v/PinTAGbIsV4&source=uds # found on http://spiritiflauticos.blogspot.fr/2014/08/angel-olsen-burn-your-fire-for-no.html
+/yt/o4LBGitcvi8
+http://youtu.be/LHcP4MWABGY # short url
+//youtube.com/v/ifAtvI48R_0
+//youtube.com/watch?v=femWm-FtfXs
+http://www.youtube.com/v/c3sBBRxDAqk
+https://www.youtube.com/v/c3sBBRxDAqk
+http://www.youtube.com/embed/c3sBBRxDAqk
+http://www.youtube.com/watch?v=Bx2guCyfLXo
+http://www.youtube.com/watch?v=Bx2guCyfLXo&feature=share
+http://www.youtube.com/watch?feature=share&v=Bx2guCyfLXo
+http://www.youtube.com/watch?feature=player_embedded&v=EXFhuAbYXBk
+https://www.youtube.com/watch?feature=player_embedded&v=rGKfrgqWcv0#! # by clicking on the youtube logo from a facebook embed
+http://www.youtube.com/watch?v=rGKfrgqWcv0&feature=share
+//www.youtube.com/watch?feature=player_embedded&v=o4LBGitcvi8
+www.youtube.com/watch?feature=player_embedded&v=o4LBGitcvi8
+//www.youtube.com/attribution_link?a=1CrQmQgWWKo&u=%2Fwatch%3Fv%3DjccW-xudoD8%26feature%3Dshare
+
+# Soundcloud tracks
+
+http://soundcloud.com/matas/hobnotropic # provided by soundcloud api documentation
+/sc/manisnotabird/bringer-of-rain-and-seed-good
+/sc/manisnotabird/bringer-of-rain-and-seed-good#http://soundcloud.com/tracks/53156756
+soundcloud.com/manisnotabird/sounds-of-spring # canonical url
+//soundcloud.com/manisnotabird/sounds-of-spring # canonical url with slashes
+https://soundcloud.com/manisnotabird/bringer-of-rain-and-seed-good
+http://soundcloud.com/tracks/53156756
+http://snd.sc/GEOIEA # short url
+http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F53867958 # embed url
+//w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F53156756&show_artwork=true
+http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F53867958&auto_play=false&show_artwork=false&color=00b4ff
+https://w.soundcloud.com/player?url=https%3A%2F%2Fsoundcloud.com%2Fdualtone%2Fshovels-rope-evil&auto_play=false&show_comments=false&color=ff7e00
+https://w.soundcloud.com/player?url=https%3A%2F%2Fsoundcloud.com%2Fpolyvinyl-records%2Fgenerationals-black-lemon-1&auto_play=false&show_comments=false&color=ff7e00
+https://w.soundcloud.com/player?url=https%3A%2F%2Fsoundcloud.com%2Fbearmedicineusa%2Finfestation&auto_play=false&show_comments=false&color=ff7e00
+https://w.soundcloud.com/player?url=https%3A%2F%2Fsoundcloud.com%2Fpartisan-records%2Fhome-leave-the-lights-on&auto_play=false&show_comments=false&color=ff7e00
+https://w.soundcloud.com/player?url=https%3A%2F%2Fsoundcloud.com%2Faaron-behrens%2Fkeep-on-rising&auto_play=false&show_comments=false&color=ff7e00
+http://soundcloud.com/wildbelle/keep-you # supposed not to be embeddable, according to oembed API (status code 403)
+
+# Soundcloud sets (not supported)
+
+https://soundcloud.com/bshq/sets/cory-branan-the-no-hit
+https://w.soundcloud.com/player?url=https%3A%2F%2Fsoundcloud.com%2Fbshq%2Fsets%2Fcory-branan-the-no-hit&auto_play=false&show_comments=false&color=ff7e00
