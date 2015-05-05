@@ -30,7 +30,7 @@ function ginit() {
 //Initializes the soundcloud API
 function scinit() {
     SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});  
-    vimeoinit();  
+
 }
 
 function vimeoinit(){
@@ -41,25 +41,25 @@ function vimeoinit(){
 }
 
 //function to get soundcloud track number
-function getTrackID(trackUrl)
+/*function getTrackID(trackUrl)
     $.get('http://api.soundcloud.com/resolve.json?url=' + trackUrl + '&client_id=YOUR_CLIENT_ID', 
         function (result) {
             console.log(result);
             return result;
         }
-);
+);*/
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
-    makeVideo();
+    //makeVideo();
 }
 
 //Plays video when the player is loaded, unless the first item is of a different type
 function onPlayerReady(event) {
     if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
-        handleSoundcloud(queueObj.cur_index);
+        //handleSoundcloud(queueObj.cur_index);
     }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
-        handleVimeo(queueObj.cur_index);
+        //handleVimeo(queueObj.cur_index);
     }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
         event.target.playVideo();
     }
@@ -74,12 +74,12 @@ function printQueue(queue){
 }
 
 //Displays the soundcloud player and plays the song at the indicated index
-function handleSoundcloud(index){
+function handleSoundcloud(){
     hidePlayers();
 
-    var scPlayer = document.getElementById("soundcloudPlayer");
-    scPlayer.style.display = "";
-
+    console.log(queueObj.queue[queueObj.cur_index].videoID);
+    embedSoundcloud(queueObj.queue[queueObj.cur_index].videoID);
+    document.getElementById("soundcloudPlayer").style.display = "inline";
 }
 
 //Displays the youtube player and plays the video at the indicated index
@@ -146,16 +146,21 @@ function makeVideo(){
     ytPlayer.style.display = "";
 
     populateQueue();
-    youtubePlayer = new YT.Player('youtubePlayer', {
-        videoId: queueObj.queue[queueObj.cur_index].videoID,
-        height: '100%',
-        width: '100%',
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onError': genericVideoSkip
-        }
-    });
+    if(!blank){
+        youtubePlayer = new YT.Player('youtubePlayer', {
+            videoId: queueObj.queue[queueObj.cur_index].videoID,
+            height: '100%',
+            width: '100%',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+                //'onError': genericVideoSkip
+            }
+        });    
+    }
+    if(queueObj.queue[queueObj.cur_index].domain == "soundcloud"){
+        handleSoundcloud();
+    }
 }
 
 //Populates the HTML for the queue on the page
@@ -179,6 +184,14 @@ function populateQueue(){
     }
     document.getElementById("queue").innerHTML = Document;
 }
+
+function embedSoundcloud(track){
+    var Document = "";
+    Document = Document + "<iframe width=\"100%\" height=\"100%\" scrolling=\"no\" frameborder=\"no\" src=\"https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com"+track+"&amp;auto_play=true&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true\"></iframe>";
+    document.getElementById("soundcloudPlayer").innerHTML = Document;
+}
+
+
 
 function genericVideoSkip(){
     if (queueObj.cur_index+1 == queueObj.queue.length) {
@@ -242,7 +255,6 @@ chrome.runtime.onMessage.addListener(
             queueObj.write('queue', []);
             queueObj.write('cur_index', 0);
         }else if(request.queueContent === null){
-            console.log(queueObj.queue.length);
             if(queueObj.queue.length == 0 || queueObj.cur_index == queueObj.queue.length){
                 blank = true;
                 return;
