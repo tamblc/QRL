@@ -4,19 +4,19 @@
 
 // Load YouTube Frame API & SoundCloud API & Google API & Vimeo API
 (function(){ //Closure, to not leak to the scope
-    var ytapi = document.createElement("script");
+    //var ytapi = document.createElement("script");
     var scapi = document.createElement("script");
     var ggapi = document.createElement("script");
-    var vimeoapi = document.createElement("script");
+    //var vimeoapi = document.createElement("script");
     ggapi.src = "https://apis.google.com/js/client.js?onload=ginit";    /* Load GG API*/
-    ytapi.src = "https://www.youtube.com/player_api";                   /* Load YT API*/
+    //ytapi.src = "https://www.youtube.com/player_api";                   /* Load YT API*/
     scapi.src = "https://connect.soundcloud.com/sdk.js";                /* Load SC API*/
-    vimeoapi.src = "https://player.vimeo.com/video/VIDEO_ID?api=1"; 
+    //vimeoapi.src = "https://player.vimeo.com/video/VIDEO_ID?api=1"; 
     var before = document.getElementsByTagName("script")[0];
-    before.parentNode.insertBefore(ytapi, before);
+    //before.parentNode.insertBefore(ytapi, before);
     before.parentNode.insertBefore(scapi, before);
     before.parentNode.insertBefore(ggapi, before);
-    before.parentNode.insertBefore(vimeoapi, before);
+   // before.parentNode.insertBefore(vimeoapi, before);
 
 })();
 
@@ -30,7 +30,7 @@ function ginit() {
 //Initializes the soundcloud API
 function scinit() {
     SC.initialize({client_id: "ec98e7fd2d4b6d79f0c30808836e1b87"});  
-    vimeoinit();  
+    //vimeoinit();  
 }
 
 function vimeoinit(){
@@ -42,7 +42,7 @@ function vimeoinit(){
 
 //Loads the Youtube player when it's ready
 function onYouTubePlayerAPIReady() {
-    makeVideo();
+    //makeVideo();
 }
 
 //Plays video when the player is loaded, unless the first item is of a different type
@@ -50,9 +50,9 @@ function onPlayerReady(event) {
     if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
         handleSoundcloud(queueObj.cur_index);
     }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
-        handleVimeo(queueObj.cur_index);
+        //handleVimeo(queueObj.cur_index);
     }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
-        event.target.playVideo();
+        //event.target.playVideo();
     }
 }
 
@@ -66,7 +66,7 @@ function printQueue(queue){
 
 //Displays the soundcloud player and plays the song at the indicated index
 function handleSoundcloud(index){
-    hidePlayers();
+    //hidePlayers();
 
     var scPlayer = document.getElementById("soundcloudPlayer");
     scPlayer.style.display = "";
@@ -75,32 +75,32 @@ function handleSoundcloud(index){
 
 //Displays the youtube player and plays the video at the indicated index
 function handleYoutube(index){
-    if(index > 0 && queueObj.queue[index-1].domain !== "youtube"){
+    /*if(index > 0 && queueObj.queue[index-1].domain !== "youtube"){
         hidePlayers();
         var ytPlayer = document.getElementById("youtubePlayer");
         ytPlayer.style.display = "";
     }
     youtubePlayer.videoId = queueObj.queue[index].videoID;
-    youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
+    youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");*/
 }
 
 //Displays the vimeo player and plays the video at the passed in index
 function handleVimeo(index){
-    alert("Sorry, we're working on playing Vimeo content!");
-    skipTo(index+1);
+    /*alert("Sorry, we're working on playing Vimeo content!");
+    skipTo(index+1);*/
 }
 
 //Skips the queue to the passed in index and handles playing the content
 function skipTo(index){
     if(queueObj.queue[index].domain === "youtube"){
-        queueObj.write('cur_index', index);
+        /*queueObj.write('cur_index', index);
         youtubePlayer.videoId = queueObj.queue[index].videoID;
         youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
-        populateQueue();
+        populateQueue();*/
     }else if(queueObj.queue[index].domain === "soundcloud"){
         handleSoundcloud(index);
     }else if(queueObj.queue[index].domain === "vimeo"){
-        handleVimeo(index);
+        //handleVimeo(index);
     }
 }
 
@@ -122,18 +122,18 @@ function remove(index){
 
 //Helper function that hides all the content players from view
 function hidePlayers(){
-    var ytPlayer = document.getElementById("youtubePlayer");
+    //var ytPlayer = document.getElementById("youtubePlayer");
     var scPlayer = document.getElementById("soundcloudPlayer");
-    var vmPlayer = document.getElementById("vimeoPlayer");
+    //var vmPlayer = document.getElementById("vimeoPlayer");
 
-    ytPlayer.style.display = "None";
+    //ytPlayer.style.display = "None";
     scPlayer.style.display = "None";
-    vmPlayer.style.display = "None";
+    //vmPlayer.style.display = "None";
 }
 
 //Helper function to make videos. Only runs after it's been called twice
 function makeVideo(){
-    var ytPlayer = document.getElementById("youtubePlayer");
+    /*var ytPlayer = document.getElementById("youtubePlayer");
     ytPlayer.style.display = "";
 
     populateQueue();
@@ -145,7 +145,7 @@ function makeVideo(){
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
         }
-    });
+    });*/
 }
 
 //Populates the HTML for the queue on the page
@@ -155,10 +155,10 @@ function populateQueue(){
     for(var x = queueObj.cur_index; x < queueObj.queue.length; x++){
         var queueClass = "thumbnail";
         if(queueObj.queue[x].domain === "youtube"){
-            console.log('Adding ' + x);
-            Document = Document + 
-            "<img id=\"" + x + "\" class=\"" +
-            queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
+            //console.log('Adding ' + x);
+            //Document = Document + 
+            //"<img id=\"" + x + "\" class=\"" +
+            //queueClass + "\" ondblclick=\"remove("+x+")\" src=\"https://img.youtube.com/vi/" + queueObj.queue[x].videoID + "/0.jpg\" /><br>";
         }else if(queueObj.queue[x].domain === "soundcloud"){
                         Document = Document + 
             "<img id=\"" + x + "\" class=\"" +
@@ -172,7 +172,7 @@ function populateQueue(){
 
 //Handler for state changes in the youtube player
 //Will autoplay the next item in the queue if the video has ended
-function onPlayerStateChange(event) {  
+/*function onPlayerStateChange(event) {  
     console.log("playerStateChange = " + event.data);
     if(event.data === YT.PlayerState.ENDED) { 
         //If last item in the queue, don't do anything
@@ -190,13 +190,13 @@ function onPlayerStateChange(event) {
         if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
             handleSoundcloud(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
-            handleVimeo(queueObj.cur_index);
+            //handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube"){
-            youtubePlayer.videoId = queueObj.queue[queueObj.cur_index].videoID;
-            youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
+            //youtubePlayer.videoId = queueObj.queue[queueObj.cur_index].videoID;
+            //youtubePlayer.loadVideoById(youtubePlayer.videoId, 0, "large");
         }
     }
-}
+}*/
 
 //---------------------------------
 // Listeners
@@ -223,6 +223,9 @@ chrome.runtime.onMessage.addListener(
                 return;
             }
         }
+
+        console.log("Received soundcloud request for " + request.queueContent.url);
+
         if(request.addNext){
             queueObj.queue.splice(queueObj.cur_index+1, 0, request.queueContent);
         }else{
@@ -261,9 +264,9 @@ document.getElementById("skip").addEventListener("click", function(){
         if(queueObj.queue[queueObj.cur_index].domain === "soundcloud") {
             handleSoundcloud(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "vimeo") {
-            handleVimeo(queueObj.cur_index);
+            //handleVimeo(queueObj.cur_index);
         }else if(queueObj.queue[queueObj.cur_index].domain === "youtube") {
-            handleYoutube(queueObj.cur_index);
+            //handleYoutube(queueObj.cur_index);
         }
     }
 });
@@ -273,10 +276,10 @@ document.getElementById("skip").addEventListener("click", function(){
 //---------------------------------
 
 //Declarations for content players
-var youtubePlayer;
+//var youtubePlayer;
 
 
-hidePlayers();
+//hidePlayers();
 //Declarations of flags
 var halt = true;
 var blank;

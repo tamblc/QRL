@@ -43,16 +43,18 @@ function parseURL(url) {
 	//literal regex magic
 	if (url.match('http(s)://(www.)?youtube|youtu\.be')) { 
 		//seriously i thought i was going to start crying blood
-	    youtube_id = url.split(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/)[1];
-	    media.type  = "youtube";
-	    media.id    = youtube_id;
-	    success = true;
+	    //youtube_id = url.split(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/)[1];
+	    //media.type  = "youtube";
+	    /*media.id    = youtube_id;
+	    success = true;*/
+	    return false;
 	}
 	else if (url.match('http(s)://(player.)?vimeo\.com')) {
-	    vimeo_id = url.split("/").slice(-1)[0];
+	    /*vimeo_id = url.split("/").slice(-1)[0];
 	    media.type  = "vimeo";
 	    media.id    = vimeo_id;
-	    success = true;
+	    success = true;*/
+	    return false;
 	}
 	else if (url.match('http(s)://(player.)?soundcloud\.com')) {
 	    soundcloud_id = url.split("\.com")[1];
@@ -72,13 +74,13 @@ function checkDomainSupport(link){
 	console.log("The video domain is: " + parser.type);
  
 	if(parser.type === "youtube"){
-		return true;
+		return false;
 	}
 	else if(parser.type === "soundcloud"){
 		return true;
 	}
 	else if(parser.type==="vimeo"){
-		return true;
+		return false;
 	}
 	else{
 		return false;
@@ -138,15 +140,10 @@ chrome.browserAction.onClicked.addListener(function(){
 
 //Adds context items
 var contexts = ["selection","link","editable","frame","video"];
-var acceptedURLs = ["*://*.youtube.com/*",
-					"*://www.youtube.com/*",
-					"*://youtube.com/*",
-					"*://youtu.be/",
-					"*://*.soundcloud.com/*",
+var acceptedURLs = ["*://*.soundcloud.com/*",
 					"*://soundcloud.com/*",
-					"*://snd.sc/*",
-					"*://*.vimeo.com/*",
-					"*://vimeo.com/*"];
+					"*://snd.sc/*"];
+					
 var validContext = "Add to queue";
 
 chrome.contextMenus.create({	"title": validContext, 
